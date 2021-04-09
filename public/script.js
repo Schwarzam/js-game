@@ -467,11 +467,11 @@ function play(gameover) {
       ctx.fillRect(0, 0, can.width, can.height);
       ctx.beginPath();
       ctx.fillStyle = "black";
-      ctx.font = "100px creepster";
+      ctx.font = "100px";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("YOU DIED! " + (player.zombiesKilled < 1 ? "No" : player.zombiesKilled.toLocaleString()) + " Zombie" + (player.zombiesKilled == 1 ? "" : "s") + " Killed", can.width / 2, can.height / 2);
-      ctx.font = "50px creepster";
+      ctx.font = "50px";
       ctx.fillText("PRESS ENTER TO RESTART", can.width / 2, 0.75 * can.height);
     } else {
       for (let i = 0; i < player.lives; i++) {
