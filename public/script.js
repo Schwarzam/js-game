@@ -1,4 +1,4 @@
-(function setup(window) {
+function setup(window) {
   var document = window.document;
   Object.prototype.on = function(a, b) {
     this.addEventListener(a, b);
@@ -32,9 +32,12 @@
   window.rand = function(a, b) {
     return Array.isArray(a) ? a[Math.floor(Math.random() * a.length)] : window.randInt(a, b);
   };
-}(window));
+}(window);
 
-(function play(gameover) {
+setup(window)
+
+function play(gameover) {
+  let can = window.can
   can.style.cursor = "none";
   var mouse = {
     x: can.width / 2,
@@ -42,7 +45,7 @@
   };
   var player = {
     x: can.width / 2,
-    y: can.height / 2,
+    y: can.height/ 2,
     s: 20,
     mx: 0,
     my: 0,
@@ -587,4 +590,6 @@
         break;
     }
   });
-}(false));
+}(false);
+
+play()
