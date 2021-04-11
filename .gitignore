@@ -4,5 +4,8 @@ node_modules
 .idea/
 .idea
 
+public_old/
+public_old
+
 .replit
 shrinkwrap.yaml
