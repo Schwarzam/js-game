@@ -38,12 +38,14 @@ function doneLoading(e) {
 
 function createPlayerSheet(){
 	let sheet = new PIXI.BaseTexture.from(app.loader.resources["viking"].url)
+	sheet.width = 323.5
+	sheet.height = 358.1;
 
-	let w = 150;
-	let h = 250;
+	let w = 70;
+	let h = 90;
 
 	playerSheet['standSouth'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h))
+		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standWest'] = [
 		new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h))
@@ -64,7 +66,7 @@ function createPlayer() {
 	player.x = app.view.width / 2;
 	player.y = app.view.height / 2;
 
-	app.stage.appendChild(player);
+	app.stage.addChild(player);
 
 	player.play();
 }
