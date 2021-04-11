@@ -18,15 +18,16 @@
 
     <!-- import the webpage's client-side javascript file -->
     <script src = "/socket.io/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi.min.js"></script>
     <script src="/script.js" defer></script>
   </head>
   <body>
+    <div id="keys"></div>
     <section class="vh-100">
       <div class="container h-100">
         <div id="gameScreen" class="h-100">
-          <div class="d-flex flex-column justify-content-center h-100">
-            <canvas id="canvas"></canvas>
+          <div class="d-flex justify-content-center h-100">
+            <div id="GAME"></div>
           </div>
         </div>
 
