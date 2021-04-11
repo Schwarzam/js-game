@@ -12,11 +12,18 @@ function init(){
     var texture = PIXI.Texture.fromImage("./favicon.png");
 
     mid = new PIXI.Sprite(texture);
-    mid.position.x = 0;
+    mid.position.x = 128;
     mid.position.y = 128;
     stage.addChild(mid);
 
+    console.log('salv')
+    requestAnimationFrame(update)
+}
+
+function update() {
     renderer.render(stage);
+
+    requestAnimationFrame(update);
 }
 
 init()
