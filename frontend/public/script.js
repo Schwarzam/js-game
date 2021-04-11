@@ -1,5 +1,5 @@
 const socket = io('http://localhost:3000')
-socket.on('init', handleInit)
+socket.on('gameState', handleInit)
 
 function handleInit(msg){
     console.log(msg)
@@ -71,9 +71,8 @@ function createPlayer() {
 	player.play();
 }
 
-
 function keysDown(e) {
-    console.log(e.keyCode);
+	socket.emit('keyDown', e.keyCode)
     keys[e.keyCode] = true;
 }
 

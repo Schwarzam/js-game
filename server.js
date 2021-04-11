@@ -2,14 +2,19 @@ const express = require("express");
 const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-app.use(express.static("public"));
+app.use(express.static("frontend/public"));
+
+const { startGameInterval } = require('./server/gameSocket')
+const { gameState, gameLoop } = require('./server/gameState')
 
 io.on('connection', client => {
-  client.emit('init', {data: 'Hello World'})
+	const state = gameState();
+	
+	startGameInterval(client, state);
 })
 
 app.get("/", (request, response) => {
-  response.sendFile(__dirname + "/views/index.html");
+  response.sendFile(__dirname + "/frontend/views/index.html");
 });
 
 const listener = http.listen(3000, () => {
