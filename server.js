@@ -29,16 +29,16 @@ io.on('connection', client => {
 
 	//JOIN GAME
 	client.on('joinGame', function(gameCode){
-		const room = io.sockets.adapter.rooms[gameCode];
+		
+		const room = io.sockets.adapter.rooms.get(gameCode);
+
 		let allUsers;
+		let numClients;
 		if (room){
-			allUsers = room.sockets;
-		}
-		let numClients = 0;
-		if (allUsers) {
-			numClients = Object.keys(allUsers).lenght;
+			numClients = room ? room.size : 0;
 		}
 		if (numClients === 0){
+			console.log(numClients)
 			client.emit('unknownGame')
 			return;
 		} else if (numClients > 2) { // Define numero de players
@@ -103,6 +103,7 @@ function moveClient(keyCode){
 
 function startGameInterval(roomName) {
 	const game = gameLoop(state[roomName]);
+	console.log(state)
 	emitGameState(roomName, state[roomName])
 	state.roomName = null;
 }
