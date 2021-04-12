@@ -6,12 +6,15 @@ module.exports = {
 }
 
 function startGameInterval(client, state) {
-	const intervalId = setInterval(() => {
-		const game = gameLoop(state);
+	const game = gameLoop(state);
 
-		client.emit('gameState', JSON.stringify(state));
+	client.emit('gameState', JSON.stringify(state));
+	// const intervalId = setInterval(() => {
+	// 	const game = gameLoop(state);
 
-		//client.emit('gameOver')
-		//clearInterval(intervalId)
-	}, 1000 / 20) //FRAME RATE 1s/x
+	// 	client.emit('gameState', JSON.stringify(state));
+
+	// 	//client.emit('gameOver')
+	// 	//clearInterval(intervalId)
+	// }, 1000 / 60) //FRAME RATE 1s/x
 }

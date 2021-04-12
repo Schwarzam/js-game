@@ -1,8 +1,10 @@
 const socket = io('http://localhost:3000')
 socket.on('gameState', handleInit)
 
-function handleInit(msg){
-    console.log(msg)
+function handleInit(data){
+    if (JSON.parse(data).player.pos){
+    	walk(JSON.parse(data).player.pos)
+    }
 }
 
 let app;
@@ -38,7 +40,7 @@ function doneLoading(e) {
 
 function createPlayerSheet(){
 	let sheet = new PIXI.BaseTexture.from(app.loader.resources["viking"].url)
-	sheet.width = 323.5
+	sheet.width = 323.5;
 	sheet.height = 358.1;
 
 	let w = 70;
@@ -63,16 +65,15 @@ function createPlayer() {
 	player.anchor.set(0.5);
 	player.animationSpeed = .5
 	player.loop = false;
+	console.log(app.view.width / 2, app.view.height / 2)
 	player.x = app.view.width / 2;
 	player.y = app.view.height / 2;
 
 	app.stage.addChild(player);
-
 	player.play();
 }
 
 function keysDown(e) {
-	socket.emit('keyDown', e.keyCode)
     keys[e.keyCode] = true;
 }
 
@@ -84,15 +85,20 @@ function gameLoop() {
 	keysDiv.innerHTML = JSON.stringify(keys);
 
 	if (keys["87"]) {
-		player.y -= 5;
+		socket.emit('keyDown', 87)
 	}
 	if (keys["65"]) {
-		player.x -= 5;
+		socket.emit('keyDown', 65)
 	}
 	if (keys["68"]) {
-		player.x += 5;
+		socket.emit('keyDown', 68)
 	}
 	if (keys["83"]) {
-		player.y += 5;
+		socket.emit('keyDown', 83)
 	}
+}
+
+function walk(pos){
+	player.x = pos.x
+	player.y = pos.y
 }

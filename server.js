@@ -9,8 +9,17 @@ const { gameState, gameLoop } = require('./server/gameState')
 
 io.on('connection', client => {
 	const state = gameState();
-	
-	startGameInterval(client, state);
+
+	client.on('keyDown', function(keyCode) {
+		console.log(keyCode)
+		const vel = moveClient(keyCode);
+
+		if (vel) {
+			state.player.vel = vel;
+		}
+
+		startGameInterval(client, state);
+	})
 })
 
 app.get("/", (request, response) => {
@@ -20,3 +29,27 @@ app.get("/", (request, response) => {
 const listener = http.listen(3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+function moveClient(keyCode){
+	try{
+		keyCode = parseInt(keyCode)
+	}catch(e){
+		console.error(e)
+		return;
+	}
+
+	switch (keyCode) {
+		case 87: { // W up
+			return { x: 0, y: -5 }
+		}
+		case 65: { //A left
+			return { x: -5, y: 0 }
+		}
+		case 68: { //D right
+			return { x: 5, y: 0 }
+		}
+		case 83: { // S down
+			return { x: 0, y: 5 }
+		}
+	}
+}

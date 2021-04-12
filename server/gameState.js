@@ -7,12 +7,12 @@ function gameState() {
 	return {
 		player: {
 			pos: {
-				x: 100,
-				y: 100
+				x: 410,
+				y: 309
 			},
 			vel: {
-				x: 5,
-				y: 5
+				x: 0,
+				y: 0
 			},
 		},
 	};
