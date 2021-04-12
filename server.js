@@ -11,7 +11,6 @@ io.on('connection', client => {
 	const state = gameState();
 
 	client.on('keyDown', function(keyCode) {
-		console.log(keyCode)
 		const vel = moveClient(keyCode);
 
 		if (vel) {
