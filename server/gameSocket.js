@@ -1,20 +1,23 @@
-const { gameState, gameLoop } = require('./gameState')
+// const { gameState, gameLoop } = require('./gameState')
 
 
-module.exports = {
-	startGameInterval
-}
+// module.exports = {
+// 	startGameInterval
+// }
 
-function startGameInterval(client, state) {
-	const game = gameLoop(state);
+// function startGameInterval(state) {
+// 	const game = gameLoop(state[roomName]);
+// 	client.emit('gameState', JSON.stringify(state));
+// }
 
-	client.emit('gameState', JSON.stringify(state));
-	// const intervalId = setInterval(() => {
-	// 	const game = gameLoop(state);
 
-	// 	client.emit('gameState', JSON.stringify(state));
 
-	// 	//client.emit('gameOver')
-	// 	//clearInterval(intervalId)
-	// }, 1000 / 60) //FRAME RATE 1s/x
-}
+
+// const intervalId = setInterval(() => {
+// 	const game = gameLoop(state);
+
+// 	client.emit('gameState', JSON.stringify(state));
+
+// 	//client.emit('gameOver')
+// 	//clearInterval(intervalId)
+// }, 1000 / 60) //FRAME RATE 1s/x

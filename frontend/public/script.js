@@ -1,17 +1,19 @@
 const socket = io('/')
-socket.on('gameState', handleInit)
 
-function handleInit(data){
-    if (JSON.parse(data).player.pos){
-    	walk(JSON.parse(data).player.pos)
+
+function handleGameState(data){
+    if (JSON.parse(data).players){
+    	walk(JSON.parse(data).players[0].pos, 0)
+    }if (JSON.parse(data).players[1]){
+    	walk(JSON.parse(data).players[1].pos, 1)
     }
 }
 
+
 let app;
-let player;
+let player = {};
 let keys = {};
 let keysDiv;
-
 let playerSheet = {}
 
 function init() {
@@ -37,7 +39,8 @@ function init() {
 
 function doneLoading(e) {
 	createPlayerSheet();
-	createPlayer();
+	createPlayer(0);
+	createPlayer(1);
 	app.ticker.add(gameLoop);
 }
 
@@ -63,17 +66,16 @@ function createPlayerSheet(){
 	]
 }
 
-function createPlayer() {
-	player = new PIXI.AnimatedSprite(playerSheet.standSouth);
-	player.anchor.set(0.5);
-	player.animationSpeed = .5
-	player.loop = false;
-	console.log(app.view.width / 2, app.view.height / 2)
-	player.x = app.view.width / 2;
-	player.y = app.view.height / 2;
+function createPlayer(n) {
+	player[`${n}`] = new PIXI.AnimatedSprite(playerSheet.standSouth);
+	player[`${n}`].anchor.set(0.5);
+	player[`${n}`].animationSpeed = .5
+	player[`${n}`].loop = false;
 
-	app.stage.addChild(player);
-	player.play();
+	player[`${n}`].x = app.view.width / 2;
+	player[`${n}`].y = app.view.height / 2;
+
+	app.stage.addChild(player[`${n}`]);
 }
 
 function keysDown(e) {
@@ -101,7 +103,8 @@ function gameLoop() {
 	}
 }
 
-function walk(pos){
-	player.x = pos.x
-	player.y = pos.y
+function walk(pos, n){
+	console.log(player[`${n}`].x, player[`1`].x)
+	player[`${n}`].x = pos.x
+	player[`${n}`].y = pos.y
 }

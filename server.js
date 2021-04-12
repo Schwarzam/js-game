@@ -5,8 +5,8 @@ const io = require('socket.io')(http);
 app.use(express.static("frontend/public"));
 
 const { makeid } = require('./server/utils')
-const { startGameInterval } = require('./server/gameSocket')
-const { gameState, gameLoop } = require('./server/gameState')
+// const { startGameInterval } = require('./server/gameSocket')
+const { gameState, gameLoop, initGame } = require('./server/gameState')
 
 state = {};
 clientRooms = {};
@@ -14,25 +14,53 @@ clientRooms = {};
 io.on('connection', client => {
 	//NEW GAME
 	client.on('newGame', function() {
+
 		let roomName = makeid(5);
 		clientRooms[client.id] = roomName;
 		client.emit('gameCode', roomName);
 
-		state[roomName] = gameState();
+		state[roomName] = initGame();
+
+		client.join(roomName)
+		client.number = 1
+
+		client.emit('init', 1)
 	})
 
 	//JOIN GAME
 	client.on('joinGame', function(gameCode){
-		
+		const room = io.sockets.adapter.rooms[gameCode];
+		let allUsers;
+		if (room){
+			allUsers = room.sockets;
+		}
+		let numClients = 0;
+		if (allUsers) {
+			numClients = Object.keys(allUsers).lenght;
+		}
+		if (numClients === 0){
+			client.emit('unknownGame')
+			return;
+		} else if (numClients > 2) { // Define numero de players
+			client.emit('tooManyPlayers')
+			return;
+		} 
+		clientRooms[client.id] = gameCode;
+		client.join(gameCode);
+		client.number = numClients + 1;
+		client.emit('init', 2)
+
+		startGameInterval(gameCode)
 	})
 
 	//KEYS PRESSED
 	client.on('keyDown', function(keyCode) {
+		const roomName = clientRooms[client.id];
 		const vel = moveClient(keyCode);
 		if (vel) {
-			state.player.vel = vel;
+			state[roomName].players[client.number - 1].vel = vel;
 		}
-		startGameInterval(client, state);
+		startGameInterval(roomName);
 	})
 
 	client.on('ping', function() {
@@ -70,4 +98,16 @@ function moveClient(keyCode){
 			return { x: 0, y: 5 }
 		}
 	}
+}
+
+
+function startGameInterval(roomName) {
+	const game = gameLoop(state[roomName]);
+	emitGameState(roomName, state[roomName])
+	state.roomName = null;
+}
+
+function emitGameState(roomName, state){
+	io.sockets.in(roomName)
+		.emit('gameState', JSON.stringify(state));
 }

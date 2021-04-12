@@ -3,9 +3,12 @@ const gameScreen = document.getElementById("gameScreen");
 const newGameBtn = document.getElementById('newGameButton')
 const joinGameBtn = document.getElementById('joinGameButton')
 const gameCodeInput = document.getElementById('gameCodeInput')
+const gameCodeDisplay = document.getElementById('gameCodeDisplay')
 
 newGameBtn.addEventListener('click', newGame);
 joinGameBtn.addEventListener('click', joinGame);
+
+let playerNumber;
 
 function newGame(){
 	socket.emit('newGame')
@@ -30,3 +33,12 @@ socket.on('pong', function() {
   latency = Date.now() - startTime;
   document.getElementById('ping').innerHTML = latency.toString() + 'ms';
 });
+
+
+function handleInit(number){
+	playerNumber = number;
+}
+
+function handleGameCode(gameCode){
+	gameCodeDisplay.innerText = gameCode
+}
