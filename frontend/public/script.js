@@ -1,6 +1,18 @@
 const socket = io('/')
 socket.on('gameState', handleInit)
 
+var startTime;
+setInterval(function() {
+  startTime = Date.now();
+  socket.emit('ping');
+}, 2000);
+
+socket.on('pong', function() {
+  latency = Date.now() - startTime;
+  document.getElementById('ping').innerHTML = latency.toString() + 'ms';
+});
+
+
 function handleInit(data){
     if (JSON.parse(data).player.pos){
     	walk(JSON.parse(data).player.pos)

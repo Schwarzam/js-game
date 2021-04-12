@@ -19,6 +19,10 @@ io.on('connection', client => {
 
 		startGameInterval(client, state);
 	})
+
+	client.on('ping', function() {
+	    client.emit('pong');
+	});
 })
 
 app.get("/", (request, response) => {
