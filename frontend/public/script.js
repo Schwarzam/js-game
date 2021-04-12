@@ -104,7 +104,6 @@ function gameLoop() {
 }
 
 function walk(pos, n){
-	console.log(player[`${n}`].x, player[`1`].x)
 	player[`${n}`].x = pos.x
 	player[`${n}`].y = pos.y
 }

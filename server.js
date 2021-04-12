@@ -29,8 +29,7 @@ io.on('connection', client => {
 
 	//JOIN GAME
 	client.on('joinGame', function(gameCode){
-		
-		const room = io.sockets.adapter.rooms.get(gameCode);
+		const room = io.sockets.adapter.rooms.get(gameCode.replace(' ', ''));
 
 		let allUsers;
 		let numClients;
@@ -38,7 +37,6 @@ io.on('connection', client => {
 			numClients = room ? room.size : 0;
 		}
 		if (numClients === 0){
-			console.log(numClients)
 			client.emit('unknownGame')
 			return;
 		} else if (numClients > 2) { // Define numero de players
@@ -47,18 +45,32 @@ io.on('connection', client => {
 		} 
 		clientRooms[client.id] = gameCode;
 		client.join(gameCode);
+
 		client.number = numClients + 1;
 		client.emit('init', 2)
 
 		startGameInterval(gameCode)
 	})
 
-	//KEYS PRESSED
+	//KEYS PRESSED 
 	client.on('keyDown', function(keyCode) {
 		const roomName = clientRooms[client.id];
 		const vel = moveClient(keyCode);
+		const zero = {x: 0, y: 0}
 		if (vel) {
-			state[roomName].players[client.number - 1].vel = vel;
+			try{
+				for (i in state[roomName].players){
+					if (Number(i) + 1 === client.number){
+						state[roomName].players[i].vel = vel;
+					}else{
+						state[roomName].players[i].vel = zero;
+					}
+				}
+				
+			}catch{
+
+			}
+			
 		}
 		startGameInterval(roomName);
 	})
@@ -103,12 +115,12 @@ function moveClient(keyCode){
 
 function startGameInterval(roomName) {
 	const game = gameLoop(state[roomName]);
-	console.log(state)
+
 	emitGameState(roomName, state[roomName])
-	state.roomName = null;
 }
 
 function emitGameState(roomName, state){
+
 	io.sockets.in(roomName)
 		.emit('gameState', JSON.stringify(state));
 }
