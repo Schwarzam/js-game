@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 app.use(express.static("frontend/public"));
 
+const { makeid } = require('./server/utils')
 const { startGameInterval } = require('./server/gameSocket')
 const { gameState, gameLoop } = require('./server/gameState')
 
