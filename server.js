@@ -7,16 +7,30 @@ app.use(express.static("frontend/public"));
 const { startGameInterval } = require('./server/gameSocket')
 const { gameState, gameLoop } = require('./server/gameState')
 
-io.on('connection', client => {
-	const state = gameState();
+state = {};
+clientRooms = {};
 
+io.on('connection', client => {
+	//NEW GAME
+	client.on('newGame', function() {
+		let roomName = makeid(5);
+		clientRooms[client.id] = roomName;
+		client.emit('gameCode', roomName);
+
+		state[roomName] = gameState();
+	})
+
+	//JOIN GAME
+	client.on('joinGame', function(gameCode){
+		
+	})
+
+	//KEYS PRESSED
 	client.on('keyDown', function(keyCode) {
 		const vel = moveClient(keyCode);
-
 		if (vel) {
 			state.player.vel = vel;
 		}
-
 		startGameInterval(client, state);
 	})
 

@@ -3,6 +3,12 @@ module.exports = {
 	gameLoop
 }
 
+function initGame() {
+	const state = gameState()
+	randomFood(state);
+	return state;
+}
+
 function gameState() {
 	return {
 		player: {
