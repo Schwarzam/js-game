@@ -4,7 +4,7 @@ const socket = io('/')
 function handleGameState(data){
     if (JSON.parse(data).players){
     	for (i in JSON.parse(data).players){
-    		walk(JSON.parse(data).players[i].pos, i)
+    		walk(JSON.parse(data).players[i].pos, players[i])
     	}	
     }
 }
@@ -39,9 +39,12 @@ function init() {
 
 function doneLoading(e) {
 	createPlayerSheet();
+
+	//Create player for each in lobby
 	for (i in players) {
-		createPlayer(i);
+		createPlayer(players[i]);
 	}
+
 	app.ticker.add(gameLoop);
 }
 
@@ -85,7 +88,7 @@ function keysUp(e) {
 	keys[e.keyCode] = false;
 }
 
-function gameLoop() {
+function gameLoop(e) {
 	keysDiv.innerHTML = JSON.stringify(keys);
 
 	if (keys["87"]) {
@@ -100,6 +103,8 @@ function gameLoop() {
 	if (keys["83"]) {
 		socket.emit('keyDown', 83)
 	}
+
+	updateBullets()
 }
 
 function walk(pos, n){

@@ -95,7 +95,6 @@ io.on('connection', client => {
 		if (vel) {
 			try{
 				for (i in state[roomName].players){
-					console.log(state[roomName].players)
 					if (Number(i) + 1 === client.number){
 						state[roomName].players[i].vel = vel;
 					}else{
