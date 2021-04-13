@@ -21,6 +21,8 @@ let playerNumber;
 let gameCode;
 let name;
 
+let players = [];
+
 function insertNameGo(){
 	name = gameNameInput.value.trim();
 	socket.emit('clientName', name)
@@ -44,11 +46,13 @@ function joinGame(){
 }
 
 function handleRoomPlayers(clients){
+	players = []
 	lobbyPlayers.innerHTML = '';
 	for (i in clients){
 		const element = document.createElement('p')
 		element.innerHTML = clients[i]
 		lobbyPlayers.appendChild(element)
+		players.push(clients[i])
 	}
 }
 

@@ -6,7 +6,7 @@ app.use(express.static("frontend/public"));
 
 const { makeid } = require('./server/utils')
 // const { startGameInterval } = require('./server/gameSocket')
-const { gameState, gameLoop, initGame } = require('./server/gameState')
+const { gameState, gameLoop, initGame, addPlayer } = require('./server/gameState')
 
 state = {};
 clientRooms = {};
@@ -48,15 +48,23 @@ io.on('connection', client => {
 		if (numClients === 0){
 			client.emit('unknownGame')
 			return;
-		} else if (numClients > 2) { // Define numero de players
+		} else if (numClients > 10) { // Define numero de players
 			client.emit('tooManyPlayers')
 			return;
 		} 
 		clientRooms[client.id] = gameCode;
+
+		if (state[gameCode].onGoing) {
+			client.emit('tooManyPlayers')
+			return;
+		}
+
 		client.join(gameCode);
 
 		client.number = numClients + 1;
 		client.emit('init', 2)
+
+		state[gameCode] = addPlayer(state[gameCode])
 
 		var arr = []
 		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
@@ -66,7 +74,7 @@ io.on('connection', client => {
 				}
 			})
 		} 
-		
+
 		io.sockets.in(gameCode)
 			.emit('roomPlayers', arr);
 
@@ -74,6 +82,7 @@ io.on('connection', client => {
 	})
 
 	client.on('gameStatus', function(code){
+		state[code].onGoing = true
 		io.sockets.in(code)
 			.emit('startGame', 'start');
 	})
@@ -86,6 +95,7 @@ io.on('connection', client => {
 		if (vel) {
 			try{
 				for (i in state[roomName].players){
+					console.log(state[roomName].players)
 					if (Number(i) + 1 === client.number){
 						state[roomName].players[i].vel = vel;
 					}else{
@@ -146,7 +156,6 @@ function startGameInterval(roomName) {
 }
 
 function emitGameState(roomName, state){
-
 	io.sockets.in(roomName)
 		.emit('gameState', JSON.stringify(state));
 }

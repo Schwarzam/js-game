@@ -3,9 +3,9 @@ const socket = io('/')
 
 function handleGameState(data){
     if (JSON.parse(data).players){
-    	walk(JSON.parse(data).players[0].pos, 0)
-    }if (JSON.parse(data).players[1]){
-    	walk(JSON.parse(data).players[1].pos, 1)
+    	for (i in JSON.parse(data).players){
+    		walk(JSON.parse(data).players[i].pos, i)
+    	}	
     }
 }
 
@@ -39,8 +39,9 @@ function init() {
 
 function doneLoading(e) {
 	createPlayerSheet();
-	createPlayer(0);
-	createPlayer(1);
+	for (i in players) {
+		createPlayer(i);
+	}
 	app.ticker.add(gameLoop);
 }
 

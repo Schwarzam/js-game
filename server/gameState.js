@@ -1,31 +1,31 @@
 module.exports = {
 	gameState,
 	gameLoop,
-	initGame
+	initGame,
+	addPlayer
 }
 
 function initGame() {
 	const state = gameState()
+	state.players.push(playerDefault())
 	//Changes to state here
-
-
 	return state;
+}
+
+function addPlayer(state) {
+	state.players.push(playerDefault())
+	playerDefault()
+	return state
 }
 
 function gameState() {
 	return {
-		players: [
-		{
-			pos: {
-				x: 410,
-				y: 309
-			},
-			vel: {
-				x: 0,
-				y: 0
-			},
-		},
-		{
+		players: [],
+	};
+}
+
+function playerDefault(){
+	return{
 			pos: {
 				x: 610,
 				y: 309
@@ -34,9 +34,7 @@ function gameState() {
 				x: 0,
 				y: 0
 			},
-		}
-		],
-	};
+	}
 }
 
 function gameLoop(state) {
@@ -44,13 +42,9 @@ function gameLoop(state) {
 		return;
 	}
 
-	const playerOne = state.players[0];
-	const playerTwo = state.players[1];
-
-	playerOne.pos.x += playerOne.vel.x;
-	playerOne.pos.y += playerOne.vel.y;
-
-	playerTwo.pos.x += playerTwo.vel.x;
-	playerTwo.pos.y += playerTwo.vel.y;
+	for (i in state.players){
+		state.players[i].pos.x += state.players[i].vel.x;
+		state.players[i].pos.y += state.players[i].vel.y;
+	}
 }
 
