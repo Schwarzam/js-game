@@ -1,6 +1,3 @@
-
-
-
 socket.on('gameState', handleGameState)
 
 socket.on('init', handleInit)
@@ -8,6 +5,10 @@ socket.on('gameCode', handleGameCode)
 
 socket.on('unknownGame', handleUnknownGame)
 socket.on('tooManyPlayers', handleTooManyPlayers)
+
+socket.on('roomPlayers', handleRoomPlayers)
+
+socket.on('startGame', handleStartGame)
 
 function handleUnknownGame(){
 	reset();

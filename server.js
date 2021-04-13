@@ -12,6 +12,12 @@ state = {};
 clientRooms = {};
 
 io.on('connection', client => {
+	
+	client.on('clientName', function(name) {
+		console.log(name)
+		client.name = name;
+	})
+
 	//NEW GAME
 	client.on('newGame', function() {
 
@@ -25,11 +31,14 @@ io.on('connection', client => {
 		client.number = 1
 
 		client.emit('init', 1)
+
+		io.sockets.in(roomName)
+			.emit('roomPlayers', [client.name]);
 	})
 
 	//JOIN GAME
 	client.on('joinGame', function(gameCode){
-		const room = io.sockets.adapter.rooms.get(gameCode.replace(' ', ''));
+		const room = io.sockets.adapter.rooms.get(gameCode.trim());
 
 		let allUsers;
 		let numClients;
@@ -49,7 +58,24 @@ io.on('connection', client => {
 		client.number = numClients + 1;
 		client.emit('init', 2)
 
-		startGameInterval(gameCode)
+		var arr = []
+		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
+			io.sockets.sockets.forEach(function(each) {
+				if (each.id === item){
+					arr.push(each.name);
+				}
+			})
+		} 
+		
+		io.sockets.in(gameCode)
+			.emit('roomPlayers', arr);
+
+		// startGameInterval(gameCode)
+	})
+
+	client.on('gameStatus', function(code){
+		io.sockets.in(code)
+			.emit('startGame', 'start');
 	})
 
 	//KEYS PRESSED 

@@ -17,7 +17,7 @@ let keysDiv;
 let playerSheet = {}
 
 function init() {
-	initialScreen.style.display = "none";
+	lobby.style.display = "none";
 	gameScreen.style.display = "block";
 
     app = new PIXI.Application({
@@ -28,7 +28,7 @@ function init() {
 
     document.getElementById('GAME').appendChild(app.view);
 
-    app.loader.add("viking", "./imgs/Sprites.png")
+    app.loader.add("person", "./imgs/pixel_person.png")
     app.loader.load(doneLoading);
 
     window.addEventListener("keydown", keysDown)
@@ -45,24 +45,22 @@ function doneLoading(e) {
 }
 
 function createPlayerSheet(){
-	let sheet = new PIXI.BaseTexture.from(app.loader.resources["viking"].url)
-	sheet.width = 323.5;
-	sheet.height = 358.1;
+	let sheet = new PIXI.BaseTexture.from(app.loader.resources["person"].url)
 
-	let w = 70;
-	let h = 90;
+	let w = 55;
+	let h = 55;
 
 	playerSheet['standSouth'] = [
 		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standWest'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h))
+		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standEast'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h))
+		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standNorth'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(1 * w, 0, w, h))
+		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 }
 

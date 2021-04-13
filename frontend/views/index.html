@@ -25,12 +25,30 @@
       #gameScreen{
         display: none;
       }
+      #lobby{
+        display: none;
+      }
+      #InitialScreen{
+        display: none;
+      }
     </style>
   </head>
   <body>
     <div id="keys"></div><div style="position: absolute; right: 0" id='ping'></div>
+    <small style="position: absolute; left: 0;">Game code: <span id="gameCodeDisplay"></span></small>
     <section class="vh-100">
       <div class="container h-100">
+
+        <div id="InsertName" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <h2>Insert Name</h2>
+            
+            <div class="form-group">
+              <input type="text" id="gameNameInput" placeholder="Enter Name">
+            </div>
+            <button type="submit" class="btn btn-success" id='insertNameButton'>Go!</button>
+          </div>
+        </div>
 
         <div id="InitialScreen" class="h-100">
           <div class="d-flex flex-column align-items-center justify-content-center h-100">
@@ -41,16 +59,28 @@
               <input type="text" id="gameCodeInput" name="" placeholder="Enter Game Code">
             </div>
             <button type="submit" class="btn btn-success" id='joinGameButton'>Join Game</button>
-
           </div>
-
-
         </div>
 
+        <div id="lobby" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <h3>Players in lobby</h3>
+            <br>
+            <br>
+            <div id="lobbyPlayers">
+              <p>You</p>
+            </div>
+            <br>
+            <br>
+            <button type="submit" class="btn btn-primary" id='startGame'>Start Game</button>
+          </div>
+          
+        </div>
 
         <div id="gameScreen" class="h-100">
+
           <div class="d-flex justify-content-center h-100">
-            <h3>Game code: <span id="gameCodeDisplay"></span></h3>
+            
             <div id="GAME"></div>
           </div>
         </div>
