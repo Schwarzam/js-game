@@ -1,11 +1,21 @@
 gameScreen.addEventListener('pointerdown', fireFunction)
+gameScreen.addEventListener('pointerup', deFireFunction)
 
 let bullets = []
+let fireInterval;
 
 function fireFunction(e) {
-	let bullet = createBullet(e);
+	bullet = createBullet(e)
+	// socket.emit('fireBullet', bullet)
+
 	bullets.push(bullet)
 }
+
+
+function deFireFunction(e) {
+	console.log('defire')
+}
+
 
 function createBullet(e) {
 	let bullet = new PIXI.Sprite.from('imgs/progetil.png')

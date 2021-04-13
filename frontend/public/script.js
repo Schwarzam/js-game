@@ -3,12 +3,13 @@ const socket = io('/')
 
 function handleGameState(data){
     if (JSON.parse(data).players){
-    	for (i in JSON.parse(data).players){
-    		walk(JSON.parse(data).players[i].pos, players[i])
+    	var instructions = JSON.parse(data).players
+    	
+    	for (i in Object.keys(instructions)){
+    		walk(instructions[Object.keys(instructions)[i]].pos, Object.keys(instructions)[i])
     	}	
     }
 }
-
 
 let app;
 let player = {};
@@ -27,8 +28,6 @@ function init() {
     })
 
     document.getElementById('GAME').appendChild(app.view);
-
-    app.loader.add("person", "./imgs/pixel_person.png")
     app.loader.load(doneLoading);
 
     window.addEventListener("keydown", keysDown)
@@ -42,14 +41,14 @@ function doneLoading(e) {
 
 	//Create player for each in lobby
 	for (i in players) {
-		createPlayer(players[i]);
+		createPlayer(Object.keys(players[i])[0]);
 	}
 
 	app.ticker.add(gameLoop);
 }
 
 function createPlayerSheet(){
-	let sheet = new PIXI.BaseTexture.from(app.loader.resources["person"].url)
+	let sheet = new PIXI.BaseTexture.from("/imgs/pixel_person.png")
 
 	let w = 55;
 	let h = 55;
@@ -88,9 +87,13 @@ function keysUp(e) {
 	keys[e.keyCode] = false;
 }
 
+let interval = false
 function gameLoop(e) {
 	keysDiv.innerHTML = JSON.stringify(keys);
 
+	// if (keys["87"] && keys["68"]){
+	// 	socket.emit('keyDown', 87)
+	// }
 	if (keys["87"]) {
 		socket.emit('keyDown', 87)
 	}

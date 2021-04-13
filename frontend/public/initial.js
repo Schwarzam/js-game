@@ -20,6 +20,7 @@ startGameButton.addEventListener('click', askStartGame);
 let playerNumber;
 let gameCode;
 let name;
+let myID;
 
 let players = [];
 
@@ -50,7 +51,7 @@ function handleRoomPlayers(clients){
 	lobbyPlayers.innerHTML = '';
 	for (i in clients){
 		const element = document.createElement('p')
-		element.innerHTML = clients[i]
+		element.innerHTML = clients[i][Object.keys(clients[i])[0]]
 		lobbyPlayers.appendChild(element)
 		players.push(clients[i])
 	}
@@ -76,10 +77,6 @@ socket.on('pong', function() {
   document.getElementById('ping').innerHTML = latency.toString() + 'ms';
 });
 
-
-function handleInit(number){
-	playerNumber = number;
-}
 
 function handleGameCode(gameCodeGet){
 	gameCode = gameCodeGet

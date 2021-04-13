@@ -14,26 +14,20 @@ clientRooms = {};
 io.on('connection', client => {
 	
 	client.on('clientName', function(name) {
-		console.log(name)
 		client.name = name;
+		client.emit('clientId', client.id)
 	})
 
 	//NEW GAME
 	client.on('newGame', function() {
-
 		let roomName = makeid(5);
 		clientRooms[client.id] = roomName;
 		client.emit('gameCode', roomName);
 
-		state[roomName] = initGame();
-
+		state[roomName] = initGame(client.id);
 		client.join(roomName)
-		client.number = 1
-
-		client.emit('init', 1)
-
 		io.sockets.in(roomName)
-			.emit('roomPlayers', [client.name]);
+			.emit('roomPlayers', [{[client.id]: client.name}]);
 	})
 
 	//JOIN GAME
@@ -62,15 +56,15 @@ io.on('connection', client => {
 		client.join(gameCode);
 
 		client.number = numClients + 1;
-		client.emit('init', 2)
 
-		state[gameCode] = addPlayer(state[gameCode])
+		state[gameCode] = addPlayer(state[gameCode], client.id)
 
+		console.log(state[gameCode].players)
 		var arr = []
 		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
 			io.sockets.sockets.forEach(function(each) {
 				if (each.id === item){
-					arr.push(each.name);
+					arr.push({[each.id] : each.name});
 				}
 			})
 		} 
@@ -81,33 +75,33 @@ io.on('connection', client => {
 		// startGameInterval(gameCode)
 	})
 
+	client.on('fireBullet', function(bullet){
+		const roomName = clientRooms[client.id];
+		state[roomName].bullets.push(bullet)
+
+		io.sockets.in(roomName)
+			.emit('bullets', state[roomName].bullets);
+	})
+
 	client.on('gameStatus', function(code){
 		state[code].onGoing = true
 		io.sockets.in(code)
 			.emit('startGame', 'start');
+
+		startGameInterval(code);
 	})
 
 	//KEYS PRESSED 
 	client.on('keyDown', function(keyCode) {
 		const roomName = clientRooms[client.id];
 		const vel = moveClient(keyCode);
-		const zero = {x: 0, y: 0}
 		if (vel) {
 			try{
-				for (i in state[roomName].players){
-					if (Number(i) + 1 === client.number){
-						state[roomName].players[i].vel = vel;
-					}else{
-						state[roomName].players[i].vel = zero;
-					}
-				}
-				
-			}catch{
-
+				state[roomName].players[client.id].vel = vel;
+			}catch(err){
+				console.log(err)
 			}
-			
 		}
-		startGameInterval(roomName);
 	})
 
 	client.on('ping', function() {
@@ -149,9 +143,10 @@ function moveClient(keyCode){
 
 
 function startGameInterval(roomName) {
-	const game = gameLoop(state[roomName]);
-
-	emitGameState(roomName, state[roomName])
+	const intervalId = setInterval(() => {
+		const game = gameLoop(state[roomName]);
+		emitGameState(roomName, state[roomName])
+	}, 1000 / 50)
 }
 
 function emitGameState(roomName, state){
