@@ -39,7 +39,7 @@ io.on('connection', client => {
 		if (room){
 			numClients = room ? room.size : 0;
 		}
-		if (numClients === 0){
+		if (numClients === 0 || numClients === undefined ){
 			client.emit('unknownGame')
 			return;
 		} else if (numClients > 10) { // Define numero de players
@@ -72,8 +72,12 @@ io.on('connection', client => {
 		io.sockets.in(gameCode)
 			.emit('roomPlayers', arr);
 
-		// startGameInterval(gameCode)
 	})
+
+	// client.on('geralConstant', function(geralConstant){
+	// 	const roomName = clientRooms[client.id];
+	// 	state[roomName].players[client.id].widthConst = geralConstant
+	// })
 
 	client.on('fireBullet', function(bullet){
 		firingBullet(bullet, client)
@@ -168,20 +172,22 @@ function emitGameState(roomName){
 
 function firingBullet(bullet, client){
 	const roomName = clientRooms[client.id];
-	const a = Math.atan2(bullet.mouseY - state[roomName].players[client.id].pos.y, bullet.mouseX - state[roomName].players[client.id].pos.x);
+
+	const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
 	const id = state[roomName].bullets.numBullets
 
-	var x = state[roomName].players[client.id].pos.x + 1
-	var y = state[roomName].players[client.id].pos.y + 1
+	console.log(state[roomName].players[client.id])
 
 	newBullet = {
 					id: id,
 					angle: a * 180/Math.PI, 
-					posX: x + Math.cos(a) * 30, 
+					posX: x + Math.cos(a) * 30,
 					posY: y + Math.sin(a) * 30,
 					speedX: Math.cos(a) * 7,
 					speedY: Math.sin(a) * 7,
 				}
+
+	console.log(newBullet, bullet, state[roomName].players[client.id].pos)
 
 	state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
 	state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
@@ -192,8 +198,8 @@ function firingBullet(bullet, client){
 function updateBullets(roomName){
 
 	const keys = Object.keys(state[roomName].bullets.bullets)
-
 	for (i in keys){
+
 		if(state[roomName].bullets.bullets[keys[i]].dead){
 				delete state[roomName].bullets.bullets[keys[i]]
 
@@ -204,7 +210,7 @@ function updateBullets(roomName){
 		}else{
 			state[roomName].bullets.bullets[keys[i]].posX += state[roomName].bullets.bullets[keys[i]].speedX;
 			state[roomName].bullets.bullets[keys[i]].posY += state[roomName].bullets.bullets[keys[i]].speedY;
-
+			
 			checkIfHit(roomName, state[roomName].bullets.bullets[keys[i]].posX, state[roomName].bullets.bullets[keys[i]].posY, keys[i])
 		}
 

@@ -17,14 +17,29 @@ let player = {};
 let keys = {};
 let keysDiv;
 let playerSheet = {}
+let geralConstant;
+let geralWidth;
+
+function sizingObjects(num){
+	return num * geralConstant;
+}
+
+function reverseSizingObjects(num){
+	return num / geralConstant;
+}
 
 function init() {
 	lobby.style.display = "none";
 	gameScreen.style.display = "block";
 
+	geralWidth = window.innerWidth < 1500 ? window.innerWidth - window.innerWidth*0.1 : 1350
+	geralConstant = geralWidth/1350
+
+	socket.emit('geralConstant', geralConstant)
+
     app = new PIXI.Application({
-        width: window.innerWidth - 20,
-        height: window.innerHeight - 20,
+        width: geralWidth,
+        height: (geralWidth) / 1.66,
         backgroundColor: 0xAAAAAA,
     })
 
@@ -56,6 +71,7 @@ function createPlayerSheet(){
 	let east = new PIXI.BaseTexture.from("/imgs/p_default_direita.png")
 	let west = new PIXI.BaseTexture.from("/imgs/p_default_esquerda.png")
 
+	console.log(sizingObjects(64))
 	let w = 64;
 	let h = 64;
 
@@ -77,6 +93,9 @@ function createPlayer(n) {
 	player[`${n}`] = new PIXI.AnimatedSprite(playerSheet.standSouth);
 	player[`${n}`].anchor.set(0.5);
 	player[`${n}`].animationSpeed = .5
+	player[`${n}`].width = sizingObjects(64)
+	player[`${n}`].height = sizingObjects(64)
+
 	player[`${n}`].loop = false;
 
 	player[`${n}`].x = app.view.width / 2;
@@ -89,7 +108,6 @@ function createGun() {
 	let gun = new PIXI.BaseTexture.from("/imgs/scout.png")
 
 	let gun1 = new PIXI.AnimatedSprite([new PIXI.Texture(gun, new PIXI.Rectangle(0, 0, 64, 64))]);
-	console.log(myId)
 	gun1.x = player[myId].x 
 	gun1.y = player[myId].y
 
@@ -107,10 +125,6 @@ function keysUp(e) {
 let interval = false
 function gameLoop(e) {
 	keysDiv.innerHTML = JSON.stringify(keys);
-
-	// if (keys["87"] && keys["68"]){
-	// 	socket.emit('keyDown', 87)
-	// }
 	if (keys["87"]) {
 		socket.emit('keyDown', 87)
 	}
@@ -139,8 +153,8 @@ function walk(obj, n){
 		player[`${n}`].textures = playerSheet['standSouth']
 	}
 
-	player[`${n}`].x = obj.pos.x
-	player[`${n}`].y = obj.pos.y
+	player[`${n}`].x = sizingObjects(obj.pos.x)
+	player[`${n}`].y = sizingObjects(obj.pos.y)
 }
 
 function createScoreBoard(data){

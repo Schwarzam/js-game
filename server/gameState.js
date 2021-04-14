@@ -26,8 +26,6 @@ function gameState() {
 			newBullets: {},
 			bullets: {},
 		},
-		health: {
-		}
 	};
 }
 

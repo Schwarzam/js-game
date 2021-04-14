@@ -9,8 +9,15 @@ let bullets = {}
 let fireInterval;
 
 function fireFunction(e) {
-	let a = Math.atan2(e.pageY - 25 - player[myId].y, e.pageX - player[myId].x);
-	const info = {mouseY: e.pageY - 25, mouseX: e.pageX}
+	
+	var rect = e.target.getBoundingClientRect();
+	var x = e.clientX - rect.left; //x position within the element.
+    var y = e.clientY - rect.top;
+
+    console.log(x, y, reverseSizingObjects(x), reverseSizingObjects(y))
+
+	const info = {mouseX: reverseSizingObjects(x), mouseY: reverseSizingObjects(y)}
+
 	socket.emit('fireBullet', info)
 }
 
@@ -27,13 +34,13 @@ function handleNewBullets(newBullets){
 function createBullet(newBullet) {
 	let bullet = new PIXI.Sprite.from('imgs/progetil.png')
 	
-	bullet.width = 12
-	bullet.height = 12
+	bullet.width = sizingObjects(12)
+	bullet.height = sizingObjects(12)
 
 	bullet.anchor.set(0.5);
 	bullet.angle = newBullet.angle;
-	bullet.x = newBullet.x;
-	bullet.y = newBullet.y;
+	bullet.x = sizingObjects(newBullet.x);
+	bullet.y = sizingObjects(newBullet.x);
 
 	app.stage.addChild(bullet);
 	return bullet
@@ -47,8 +54,8 @@ function updateBullets(bulletsState){
 			app.stage.removeChild(bullets[bulletsState[i].id])
 			delete bullets[bulletsState[i].id]
 		}else{
-			bullets[bulletsState[i].id].x = bulletsState[i].posX
-			bullets[bulletsState[i].id].y = bulletsState[i].posY
+			bullets[bulletsState[i].id].x = sizingObjects(bulletsState[i].posX)
+			bullets[bulletsState[i].id].y = sizingObjects(bulletsState[i].posY)
 		}
 	}
 }
