@@ -2,8 +2,8 @@ const socket = io('/')
 
 
 function handleGameState(data){
-    if (JSON.parse(data).players){
-    	var instructions = JSON.parse(data).players
+    if (data){
+    	var instructions = JSON.parse(data)
     	
     	for (i in Object.keys(instructions)){
     		walk(instructions[Object.keys(instructions)[i]].pos, Object.keys(instructions)[i])
@@ -106,8 +106,6 @@ function gameLoop(e) {
 	if (keys["83"]) {
 		socket.emit('keyDown', 83)
 	}
-
-	updateBullets()
 }
 
 function walk(pos, n){

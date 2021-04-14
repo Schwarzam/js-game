@@ -1,51 +1,52 @@
+socket.on('newBullets', handleNewBullets)
+socket.on('bulletsState', updateBullets)
+
 gameScreen.addEventListener('pointerdown', fireFunction)
 gameScreen.addEventListener('pointerup', deFireFunction)
 
-let bullets = []
+let bullets = {}
 let fireInterval;
 
 function fireFunction(e) {
-	bullet = createBullet(e)
-	// socket.emit('fireBullet', bullet)
-
-	bullets.push(bullet)
+	let a = Math.atan2(e.pageY - 25 - player[myId].y, e.pageX - player[myId].x);
+	const info = {mouseY: e.pageY - 25, mouseX: e.pageX}
+	socket.emit('fireBullet', info)
 }
-
 
 function deFireFunction(e) {
 	console.log('defire')
 }
 
+function handleNewBullets(newBullets){
+	console.log(newBullets)
+	for (i in newBullets){
+		bullets[newBullets[i].id] = createBullet(newBullets[i])
+	}
+}
 
-function createBullet(e) {
+function createBullet(newBullet) {
 	let bullet = new PIXI.Sprite.from('imgs/progetil.png')
-	let a = Math.atan2(e.pageY - 25 - player[name].y, e.pageX - player[name].x);
-
+	
 	bullet.width = 12
 	bullet.height = 12
-	// var deltaX = input.mouseX - (this.localX + this.width/2);
-	// var deltaY = input.pageY - (this.localY + this.height/2);
-
-	bullet.player = name;
-
-	bullet.angle = a * 180/Math.PI 
 
 	bullet.anchor.set(0.5);
-	bullet.x = player[name].x;
-	bullet.y = player[name].y;
-
-	console.log(a * 180/Math.PI)
-
-	bullet.speedX =  Math.cos(a) * 5;
-	bullet.speedY = Math.sin(a) * 5;
+	bullet.angle = newBullet.angle;
+	bullet.x = newBullet.x;
+	bullet.y = newBullet.y;
 
 	app.stage.addChild(bullet);
 	return bullet
 }
 
-function updateBullets(){
-	for (i in bullets){
-		bullets[i].position.x += bullets[i].speedX;
-		bullets[i].position.y += bullets[i].speedY;
+function updateBullets(bulletsState){
+	for (i in bulletsState){
+		if (bulletsState[i].posX < -99 || bulletsState[i].posX > 1500 || bulletsState[i].posY < -99 || bulletsState[i].posY > 1500){
+			app.stage.removeChild(bullets[bulletsState[i].id])
+			delete bullets[bulletsState[i].id]
+		}else{
+			bullets[bulletsState[i].id].x = bulletsState[i].posX
+			bullets[bulletsState[i].id].y = bulletsState[i].posY
+		}
 	}
 }

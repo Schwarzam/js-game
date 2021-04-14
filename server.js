@@ -76,11 +76,7 @@ io.on('connection', client => {
 	})
 
 	client.on('fireBullet', function(bullet){
-		const roomName = clientRooms[client.id];
-		state[roomName].bullets.push(bullet)
-
-		io.sockets.in(roomName)
-			.emit('bullets', state[roomName].bullets);
+		firingBullet(bullet, client)
 	})
 
 	client.on('gameStatus', function(code){
@@ -145,11 +141,58 @@ function moveClient(keyCode){
 function startGameInterval(roomName) {
 	const intervalId = setInterval(() => {
 		const game = gameLoop(state[roomName]);
-		emitGameState(roomName, state[roomName])
+		emitGameState(roomName, state[roomName]);
+		updateBullets(roomName)
 	}, 1000 / 50)
 }
 
-function emitGameState(roomName, state){
+function emitGameState(roomName){
 	io.sockets.in(roomName)
-		.emit('gameState', JSON.stringify(state));
+		.emit('gameState', JSON.stringify(state[roomName].players));
+
+	if (Object.keys(state[roomName].bullets.newBullets).length > 0){
+		io.sockets.in(roomName)
+			.emit('newBullets', state[roomName].bullets.newBullets)
+		state[roomName].bullets.newBullets = {}
+	}
+}
+
+function firingBullet(bullet, client){
+	const roomName = clientRooms[client.id];
+	const a = Math.atan2(bullet.mouseY - state[roomName].players[client.id].pos.y, bullet.mouseX - state[roomName].players[client.id].pos.x);
+	const id = state[roomName].bullets.numBullets
+
+	var x = state[roomName].players[client.id].pos.x + 1
+	var y = state[roomName].players[client.id].pos.y + 1
+
+	newBullet = {
+					id: id,
+					angle: a * 180/Math.PI, 
+					posX: x, 
+					posY: y,
+					speedX: Math.cos(a) * 7,
+					speedY: Math.sin(a) * 7,
+				}
+
+	state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
+	state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
+	state[roomName].bullets.numBullets = state[roomName].bullets.numBullets + 1
+}
+
+
+function updateBullets(roomName){
+
+	const keys = Object.keys(state[roomName].bullets.bullets)
+	for (i in keys){
+		if (state[roomName].bullets.bullets[keys[i]].posX > 1600 || state[roomName].bullets.bullets[keys[i]].posX < -100){
+			delete state[roomName].bullets.bullets[keys[i]]
+		}else if (state[roomName].bullets.bullets[keys[i]].posY > 1600 || state[roomName].bullets.bullets[keys[i]].posY < -100){
+			delete state[roomName].bullets.bullets[keys[i]]
+		}else{
+			state[roomName].bullets.bullets[keys[i]].posX += state[roomName].bullets.bullets[keys[i]].speedX;
+			state[roomName].bullets.bullets[keys[i]].posY += state[roomName].bullets.bullets[keys[i]].speedY;
+		}
+	}
+	io.sockets.in(roomName)
+			.emit('bulletsState', state[roomName].bullets.bullets)
 }

@@ -21,6 +21,11 @@ function addPlayer(state, playerIdentifier) {
 function gameState() {
 	return {
 		players: {},
+		bullets: {
+			numBullets: 0,
+			newBullets: {},
+			bullets: {}
+		}
 	};
 }
 
