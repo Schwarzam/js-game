@@ -38,11 +38,12 @@ function init() {
 
 function doneLoading(e) {
 	createPlayerSheet();
-
+	
 	//Create player for each in lobby
 	for (i in players) {
 		createPlayer(Object.keys(players[i])[0]);
 	}
+	// createGun()
 
 	app.ticker.add(gameLoop);
 }
@@ -80,6 +81,17 @@ function createPlayer(n) {
 	player[`${n}`].y = app.view.height / 2;
 
 	app.stage.addChild(player[`${n}`]);
+}
+
+function createGun() {
+	let gun = new PIXI.BaseTexture.from("/imgs/scout.png")
+
+	let gun1 = new PIXI.AnimatedSprite([new PIXI.Texture(gun, new PIXI.Rectangle(0, 0, 64, 64))]);
+	console.log(myId)
+	gun1.x = player[myId].x 
+	gun1.y = player[myId].y
+
+	app.stage.addChild(gun1);
 }
 
 function keysDown(e) {
