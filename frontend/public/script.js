@@ -6,7 +6,7 @@ function handleGameState(data){
     	var instructions = JSON.parse(data)
     	
     	for (i in Object.keys(instructions)){
-    		walk(instructions[Object.keys(instructions)[i]].pos, Object.keys(instructions)[i])
+    		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     	}	
     }
 }
@@ -48,22 +48,25 @@ function doneLoading(e) {
 }
 
 function createPlayerSheet(){
-	let sheet = new PIXI.BaseTexture.from("/imgs/pixel_person.png")
+	let south = new PIXI.BaseTexture.from("/imgs/p_default_frente.png")
+	let north = new PIXI.BaseTexture.from("/imgs/p_default_costa.png")
+	let east = new PIXI.BaseTexture.from("/imgs/p_default_direita.png")
+	let west = new PIXI.BaseTexture.from("/imgs/p_default_esquerda.png")
 
-	let w = 55;
-	let h = 55;
+	let w = 64;
+	let h = 64;
 
 	playerSheet['standSouth'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
+		new PIXI.Texture(south, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standWest'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
+		new PIXI.Texture(west, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standEast'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
+		new PIXI.Texture(east, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 	playerSheet['standNorth'] = [
-		new PIXI.Texture(sheet, new PIXI.Rectangle(0 * w, 0, w, h))
+		new PIXI.Texture(north, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 }
 
@@ -108,7 +111,21 @@ function gameLoop(e) {
 	}
 }
 
-function walk(pos, n){
-	player[`${n}`].x = pos.x
-	player[`${n}`].y = pos.y
+function walk(obj, n){
+	if (obj.pos.x - player[`${n}`].x > 0){
+		player[`${n}`].textures = playerSheet['standEast']
+	}
+	if (obj.pos.x - player[`${n}`].x < 0){
+		player[`${n}`].textures = playerSheet['standWest']
+	}
+	if (obj.pos.y - player[`${n}`].y < 0){
+		player[`${n}`].textures = playerSheet['standNorth']
+	}
+	if (obj.pos.y - player[`${n}`].y > 0){
+		player[`${n}`].textures = playerSheet['standSouth']
+	}
+
+	player[`${n}`].x = obj.pos.x
+	player[`${n}`].y = obj.pos.y
+
 }
