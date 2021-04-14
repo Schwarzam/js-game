@@ -93,7 +93,16 @@ io.on('connection', client => {
 		const vel = moveClient(keyCode);
 		if (vel) {
 			try{
-				state[roomName].players[client.id].vel = vel;
+				if (state[roomName].players[client.id].vel.x === 0){
+					state[roomName].players[client.id].vel.x += vel.x;
+				}
+				if (state[roomName].players[client.id].vel.y === 0){
+					state[roomName].players[client.id].vel.y += vel.y;
+				}
+				if (state[roomName].players[client.id].vel.x !== 0 && state[roomName].players[client.id].vel.y !== 0){
+					state[roomName].players[client.id].vel.x = state[roomName].players[client.id].vel.x/1.4
+					state[roomName].players[client.id].vel.y = state[roomName].players[client.id].vel.y/1.4
+				}
 			}catch(err){
 				console.log(err)
 			}

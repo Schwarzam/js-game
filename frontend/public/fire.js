@@ -47,7 +47,6 @@ function updateBullets(bulletsState){
 			app.stage.removeChild(bullets[bulletsState[i].id])
 			delete bullets[bulletsState[i].id]
 		}else{
-
 			bullets[bulletsState[i].id].x = bulletsState[i].posX
 			bullets[bulletsState[i].id].y = bulletsState[i].posY
 		}

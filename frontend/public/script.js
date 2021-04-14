@@ -147,6 +147,7 @@ function createScoreBoard(data){
 	console.log(data[Object.keys(data)[0]], data)
 	const board = document.getElementById('health')
 	const individual = document.createElement('p')
+	individual.style.padding = '12px'
 
 	individual.innerHTML = `${data[Object.keys(data)[0]]} <code id=${Object.keys(data)[0]}></code>`
 	board.appendChild(individual)
