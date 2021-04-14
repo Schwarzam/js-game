@@ -13,9 +13,7 @@ function fireFunction(e) {
 	var rect = e.target.getBoundingClientRect();
 	var x = e.clientX - rect.left; //x position within the element.
     var y = e.clientY - rect.top;
-
-    console.log(x, y, reverseSizingObjects(x), reverseSizingObjects(y))
-
+    
 	const info = {mouseX: reverseSizingObjects(x), mouseY: reverseSizingObjects(y)}
 
 	socket.emit('fireBullet', info)

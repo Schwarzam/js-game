@@ -33,7 +33,6 @@ io.on('connection', client => {
 	//JOIN GAME
 	client.on('joinGame', function(gameCode){
 		const room = io.sockets.adapter.rooms.get(gameCode.trim());
-
 		let allUsers;
 		let numClients;
 		if (room){
@@ -52,11 +51,8 @@ io.on('connection', client => {
 			client.emit('tooManyPlayers')
 			return;
 		}
-
 		client.join(gameCode);
-
 		client.number = numClients + 1;
-
 		state[gameCode] = addPlayer(state[gameCode], client.id)
 
 		console.log(state[gameCode].players)
@@ -71,7 +67,6 @@ io.on('connection', client => {
 
 		io.sockets.in(gameCode)
 			.emit('roomPlayers', arr);
-
 	})
 
 	// client.on('geralConstant', function(geralConstant){
@@ -87,7 +82,6 @@ io.on('connection', client => {
 		state[code].onGoing = true
 		io.sockets.in(code)
 			.emit('startGame', 'start');
-
 		startGameInterval(code);
 	})
 
@@ -98,6 +92,7 @@ io.on('connection', client => {
 
 
 		if (vel) {
+
 			try{
 				if (state[roomName].players[client.id].vel.x === 0){
 					state[roomName].players[client.id].vel.x += vel.x;
@@ -105,7 +100,7 @@ io.on('connection', client => {
 				if (state[roomName].players[client.id].vel.y === 0){
 					state[roomName].players[client.id].vel.y += vel.y;
 				}
-				if (state[roomName].players[client.id].vel.x !== 0 && state[roomName].players[client.id].vel.y !== 0){
+				if (Math.abs(state[roomName].players[client.id].vel.x) > 3 && Math.abs(state[roomName].players[client.id].vel.y) > 3){	
 					state[roomName].players[client.id].vel.x = state[roomName].players[client.id].vel.x/1.4
 					state[roomName].players[client.id].vel.y = state[roomName].players[client.id].vel.y/1.4
 				}
@@ -181,8 +176,6 @@ function firingBullet(bullet, client){
 	const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
 	const id = state[roomName].bullets.numBullets
 
-	console.log(state[roomName].players[client.id])
-
 	newBullet = {
 					id: id,
 					angle: a * 180/Math.PI, 
@@ -191,9 +184,6 @@ function firingBullet(bullet, client){
 					speedX: Math.cos(a) * 7,
 					speedY: Math.sin(a) * 7,
 				}
-
-	console.log(newBullet, bullet, state[roomName].players[client.id].pos)
-
 	state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
 	state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
 	state[roomName].bullets.numBullets = state[roomName].bullets.numBullets + 1
