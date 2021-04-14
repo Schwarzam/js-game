@@ -4,8 +4,16 @@ socket.on('bulletsState', updateBullets)
 
 gameScreen.addEventListener('pointerdown', fireFunction)
 gameScreen.addEventListener('pointerup', deFireFunction)
+gameScreen.addEventListener("mousemove", updateMousePos);
 
-let bullets = {}
+function updateMousePos(e) {
+	var rect = e.target.getBoundingClientRect();
+
+	mousePos.x = e.clientX - rect.left;
+	mousePos.y = e.clientY - rect.top;
+}
+
+let bullets = {};
 let fireInterval;
 
 function fireFunction(e) {

@@ -20,6 +20,8 @@ let playerSheet = {}
 let geralConstant;
 let geralWidth;
 
+let mousePos = {}
+
 function sizingObjects(num){
 	return num * geralConstant;
 }
@@ -29,6 +31,8 @@ function reverseSizingObjects(num){
 }
 
 function init() {
+	sendMousePosition()
+
 	lobby.style.display = "none";
 	gameScreen.style.display = "block";
 
@@ -59,9 +63,9 @@ function doneLoading(e) {
 	for (i in players) {
 		createPlayer(Object.keys(players[i])[0]);
 		createScoreBoard(players[i]);
+		createGun(Object.keys(players[i])[0]);
 	}
-
-	// createGun()
+	
 	app.ticker.add(gameLoop);
 }
 
@@ -104,14 +108,19 @@ function createPlayer(n) {
 	app.stage.addChild(player[`${n}`]);
 }
 
-function createGun() {
+function createGun(n) {
 	let gun = new PIXI.BaseTexture.from("/imgs/scout.png")
 
-	let gun1 = new PIXI.AnimatedSprite([new PIXI.Texture(gun, new PIXI.Rectangle(0, 0, 64, 64))]);
-	gun1.x = player[myId].x 
-	gun1.y = player[myId].y
+	player[`${n}`].gun = new PIXI.AnimatedSprite([new PIXI.Texture(gun, new PIXI.Rectangle(0, 0, 64, 64))]);
+	player[`${n}`].gun.width = sizingObjects(64)
+	player[`${n}`].gun.height = sizingObjects(64)
+	player[`${n}`].gun.x = player[`${n}`].x 
+	player[`${n}`].gun.y = player[`${n}`].y + 10
 
-	app.stage.addChild(gun1);
+	player[`${n}`].gun.anchor.set(0.5)
+	player[`${n}`].gun.scale.x = -1;
+
+	app.stage.addChild(player[`${n}`].gun);
 }
 
 function keysDown(e) {
@@ -155,6 +164,15 @@ function walk(obj, n){
 
 	player[`${n}`].x = sizingObjects(obj.pos.x)
 	player[`${n}`].y = sizingObjects(obj.pos.y)
+
+	try{
+		player[`${n}`].gun.x = player[`${n}`].x
+		player[`${n}`].gun.y = player[`${n}`].y 
+
+		player[`${n}`].gun.angle = Math.atan2(obj.mousePos.y - player[`${n}`].y, obj.mousePos.x - player[`${n}`].x) * 180 / Math.PI;
+	}catch{
+		
+	}
 }
 
 function createScoreBoard(data){

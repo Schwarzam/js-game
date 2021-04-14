@@ -20,6 +20,7 @@ function addPlayer(state, playerIdentifier) {
 
 function gameState() {
 	return {
+		gameMode: '',
 		players: {},
 		bullets: {
 			numBullets: 0,
@@ -39,8 +40,9 @@ function playerDefault(){
 				x: 0,
 				y: 0
 			},
-			health: 100
-		}	
+			health: 100,
+			gunState: {}
+		}
 }
 
 function gameLoop(state) {

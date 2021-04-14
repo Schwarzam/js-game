@@ -31,3 +31,9 @@ function reset() {
 	initialScreen.style.display = "block";
 	gameScreen.style.display = "none";
 }
+
+function sendMousePosition() {
+	setInterval(function() {
+	  socket.emit('mousePos', mousePos)
+	}, 100);
+}

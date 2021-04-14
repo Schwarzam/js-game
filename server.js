@@ -7,6 +7,7 @@ app.use(express.static("frontend/public"));
 const { makeid } = require('./server/utils')
 // const { startGameInterval } = require('./server/gameSocket')
 const { gameState, gameLoop, initGame, addPlayer } = require('./server/gameState')
+const { weapons } = require('./server/weapons')
 
 state = {};
 clientRooms = {};
@@ -26,6 +27,9 @@ io.on('connection', client => {
 
 		state[roomName] = initGame(client.id);
 		client.join(roomName)
+
+		chooseGun(client, 'scout')
+
 		io.sockets.in(roomName)
 			.emit('roomPlayers', [{[client.id]: client.name}]);
 	})
@@ -55,6 +59,8 @@ io.on('connection', client => {
 		client.number = numClients + 1;
 		state[gameCode] = addPlayer(state[gameCode], client.id)
 
+		chooseGun(client, 'scout')
+
 		console.log(state[gameCode].players)
 		var arr = []
 		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
@@ -69,6 +75,13 @@ io.on('connection', client => {
 			.emit('roomPlayers', arr);
 	})
 
+	
+	client.on('mousePos', function(mousePos){
+		try{
+			const roomName = clientRooms[client.id];
+			state[roomName].players[client.id].mousePos = mousePos
+		}catch(err){console.log(err)}
+	})
 	// client.on('geralConstant', function(geralConstant){
 	// 	const roomName = clientRooms[client.id];
 	// 	state[roomName].players[client.id].widthConst = geralConstant
@@ -147,7 +160,6 @@ function moveClient(keyCode){
 	}
 }
 
-
 function startGameInterval(roomName) {
 	const intervalId = setInterval(() => {
 		const game = gameLoop(state[roomName]);
@@ -167,26 +179,44 @@ function emitGameState(roomName){
 	}
 }
 
-function firingBullet(bullet, client){
+function chooseGun(client, gun){
 	const roomName = clientRooms[client.id];
+	state[roomName].players[client.id].gunState = weapons()[gun]
+}
 
-	var x = state[roomName].players[client.id].pos.x
-	var y = state[roomName].players[client.id].pos.y
-	
-	const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
-	const id = state[roomName].bullets.numBullets
+function firingBullet(bullet, client){
+	try{
+		const roomName = clientRooms[client.id];
+		var damage = state[roomName].players[client.id].gunState.damage;
 
-	newBullet = {
-					id: id,
-					angle: a * 180/Math.PI, 
-					posX: x + Math.cos(a) * 30,
-					posY: y + Math.sin(a) * 30,
-					speedX: Math.cos(a) * 7,
-					speedY: Math.sin(a) * 7,
-				}
-	state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
-	state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
-	state[roomName].bullets.numBullets = state[roomName].bullets.numBullets + 1
+		if (+new Date() - state[roomName].players[client.id].lastFire < state[roomName].players[client.id].gunState.fire_rate * 1000){
+
+		}else{
+		
+			var x = state[roomName].players[client.id].pos.x
+			var y = state[roomName].players[client.id].pos.y
+			
+			const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
+			const id = state[roomName].bullets.numBullets
+
+			newBullet = {
+							id: id,
+							angle: a * 180/Math.PI, 
+							posX: x + Math.cos(a) * 30,
+							posY: y + Math.sin(a) * 50,
+							speedX: Math.cos(a) * state[roomName].players[client.id].gunState.bullet_speed,
+							speedY: Math.sin(a) * state[roomName].players[client.id].gunState.bullet_speed,
+							damage: damage
+						}
+
+			state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
+			state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
+			state[roomName].bullets.numBullets = state[roomName].bullets.numBullets + 1	
+
+			state[roomName].players[client.id].lastFire = +new Date();
+		}
+		
+	}catch(e){console.log(e)}
 }
 
 
@@ -206,20 +236,18 @@ function updateBullets(roomName){
 			state[roomName].bullets.bullets[keys[i]].posX += state[roomName].bullets.bullets[keys[i]].speedX;
 			state[roomName].bullets.bullets[keys[i]].posY += state[roomName].bullets.bullets[keys[i]].speedY;
 			
-			checkIfHit(roomName, state[roomName].bullets.bullets[keys[i]].posX, state[roomName].bullets.bullets[keys[i]].posY, keys[i])
+			checkIfHit(roomName, state[roomName].bullets.bullets[keys[i]].posX, state[roomName].bullets.bullets[keys[i]].posY, state[roomName].bullets.bullets[keys[i]].damage, keys[i])
 		}
-
-		
 	}
 	io.sockets.in(roomName)
 			.emit('bulletsState', state[roomName].bullets.bullets)
 }
 
-function checkIfHit(roomName ,BulletPosx, BulletPosy, BulletId){
+function checkIfHit(roomName ,BulletPosx, BulletPosy, damage, BulletId){
 
 	for (i in Object.keys(state[roomName].players)){
 		if (BulletPosx > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x - 13 && BulletPosx < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x + 13 && BulletPosy > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y -32 && BulletPosy < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y + 32){
-			state[roomName].players[Object.keys(state[roomName].players)[i]].health -= 10
+			state[roomName].players[Object.keys(state[roomName].players)[i]].health -= damage
 			state[roomName].bullets.bullets[BulletId].dead = true
 		}
 		
