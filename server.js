@@ -95,6 +95,8 @@ io.on('connection', client => {
 	client.on('keyDown', function(keyCode) {
 		const roomName = clientRooms[client.id];
 		const vel = moveClient(keyCode);
+
+
 		if (vel) {
 			try{
 				if (state[roomName].players[client.id].vel.x === 0){
@@ -173,6 +175,9 @@ function emitGameState(roomName){
 function firingBullet(bullet, client){
 	const roomName = clientRooms[client.id];
 
+	var x = state[roomName].players[client.id].pos.x
+	var y = state[roomName].players[client.id].pos.y
+	
 	const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
 	const id = state[roomName].bullets.numBullets
 

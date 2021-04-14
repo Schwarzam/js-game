@@ -140,16 +140,16 @@ function gameLoop(e) {
 }
 
 function walk(obj, n){
-	if (obj.pos.x - player[`${n}`].x > 0){
+	if (sizingObjects(obj.pos.x) - player[`${n}`].x > 0){
 		player[`${n}`].textures = playerSheet['standEast']
 	}
-	if (obj.pos.x - player[`${n}`].x < 0){
+	if (sizingObjects(obj.pos.x) - player[`${n}`].x < 0){
 		player[`${n}`].textures = playerSheet['standWest']
 	}
-	if (obj.pos.y - player[`${n}`].y < 0){
+	if (sizingObjects(obj.pos.y) - player[`${n}`].y < 0){
 		player[`${n}`].textures = playerSheet['standNorth']
 	}
-	if (obj.pos.y - player[`${n}`].y > 0){
+	if (sizingObjects(obj.pos.y) - player[`${n}`].y > 0){
 		player[`${n}`].textures = playerSheet['standSouth']
 	}
 

@@ -48,9 +48,18 @@ function gameLoop(state) {
 		return;
 	}	
 	for (i in Object.keys(state.players)){
-		state.players[Object.keys(state.players)[i]].pos.x += state.players[Object.keys(state.players)[i]].vel.x;
-		state.players[Object.keys(state.players)[i]].pos.y += state.players[Object.keys(state.players)[i]].vel.y;
-
+		if (state.players[Object.keys(state.players)[i]].pos.x + state.players[Object.keys(state.players)[i]].vel.x > 1350){
+			state.players[Object.keys(state.players)[i]].pos.x = 1349
+		}else if (state.players[Object.keys(state.players)[i]].pos.x + state.players[Object.keys(state.players)[i]].vel.x < 0){
+			state.players[Object.keys(state.players)[i]].pos.x = 1
+		}else if (state.players[Object.keys(state.players)[i]].pos.y + state.players[Object.keys(state.players)[i]].vel.y > 814){
+			state.players[Object.keys(state.players)[i]].pos.y = 812
+		}else if (state.players[Object.keys(state.players)[i]].pos.y + state.players[Object.keys(state.players)[i]].vel.y < 0){
+			state.players[Object.keys(state.players)[i]].pos.y = 1
+		}else{
+			state.players[Object.keys(state.players)[i]].pos.x += state.players[Object.keys(state.players)[i]].vel.x;
+			state.players[Object.keys(state.players)[i]].pos.y += state.players[Object.keys(state.players)[i]].vel.y;
+		}
 		state.players[Object.keys(state.players)[i]].vel = {x: 0, y: 0}
 	}
 }
