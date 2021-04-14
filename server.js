@@ -148,7 +148,7 @@ function startGameInterval(roomName) {
 
 function emitGameState(roomName){
 	io.sockets.in(roomName)
-		.emit('gameState', JSON.stringify(state[roomName].players));
+		.emit('gameState', state[roomName].players);
 
 	if (Object.keys(state[roomName].bullets.newBullets).length > 0){
 		io.sockets.in(roomName)
@@ -168,8 +168,8 @@ function firingBullet(bullet, client){
 	newBullet = {
 					id: id,
 					angle: a * 180/Math.PI, 
-					posX: x, 
-					posY: y,
+					posX: x + Math.cos(a) * 30, 
+					posY: y + Math.sin(a) * 30,
 					speedX: Math.cos(a) * 7,
 					speedY: Math.sin(a) * 7,
 				}
@@ -183,16 +183,37 @@ function firingBullet(bullet, client){
 function updateBullets(roomName){
 
 	const keys = Object.keys(state[roomName].bullets.bullets)
+
 	for (i in keys){
-		if (state[roomName].bullets.bullets[keys[i]].posX > 1600 || state[roomName].bullets.bullets[keys[i]].posX < -100){
-			delete state[roomName].bullets.bullets[keys[i]]
+		if(state[roomName].bullets.bullets[keys[i]].dead){
+				delete state[roomName].bullets.bullets[keys[i]]
+
+		}else if (state[roomName].bullets.bullets[keys[i]].posX > 1600 || state[roomName].bullets.bullets[keys[i]].posX < -100){
+			state[roomName].bullets.bullets[keys[i]].dead = true
 		}else if (state[roomName].bullets.bullets[keys[i]].posY > 1600 || state[roomName].bullets.bullets[keys[i]].posY < -100){
-			delete state[roomName].bullets.bullets[keys[i]]
+			state[roomName].bullets.bullets[keys[i]].dead = true
 		}else{
 			state[roomName].bullets.bullets[keys[i]].posX += state[roomName].bullets.bullets[keys[i]].speedX;
 			state[roomName].bullets.bullets[keys[i]].posY += state[roomName].bullets.bullets[keys[i]].speedY;
+
+			checkIfHit(roomName, state[roomName].bullets.bullets[keys[i]].posX, state[roomName].bullets.bullets[keys[i]].posY, keys[i])
 		}
+
+		
 	}
 	io.sockets.in(roomName)
 			.emit('bulletsState', state[roomName].bullets.bullets)
+}
+
+function checkIfHit(roomName ,BulletPosx, BulletPosy, BulletId){
+
+	for (i in Object.keys(state[roomName].players)){
+		if (BulletPosx > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x - 13 && BulletPosx < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x + 13 && BulletPosy > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y -32 && BulletPosy < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y + 32){
+			state[roomName].players[Object.keys(state[roomName].players)[i]].health -= 10
+			state[roomName].bullets.bullets[BulletId].dead = true
+		}
+		
+		// state.players[Object.keys(state.players)[i]].pos.y
+		// state.players[Object.keys(state.players)[i]].vel = {x: 0, y: 0}
+	}
 }

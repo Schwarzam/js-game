@@ -24,7 +24,9 @@ function gameState() {
 		bullets: {
 			numBullets: 0,
 			newBullets: {},
-			bullets: {}
+			bullets: {},
+		},
+		health: {
 		}
 	};
 }
@@ -39,6 +41,7 @@ function playerDefault(){
 				x: 0,
 				y: 0
 			},
+			health: 100
 		}	
 }
 

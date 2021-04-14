@@ -3,10 +3,11 @@ const socket = io('/')
 
 function handleGameState(data){
     if (data){
-    	var instructions = JSON.parse(data)
+    	var instructions = data
     	
     	for (i in Object.keys(instructions)){
     		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
+    		displayHealth(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     	}	
     }
 }
@@ -42,9 +43,10 @@ function doneLoading(e) {
 	//Create player for each in lobby
 	for (i in players) {
 		createPlayer(Object.keys(players[i])[0]);
+		createScoreBoard(players[i]);
 	}
-	// createGun()
 
+	// createGun()
 	app.ticker.add(gameLoop);
 }
 
@@ -139,5 +141,20 @@ function walk(obj, n){
 
 	player[`${n}`].x = obj.pos.x
 	player[`${n}`].y = obj.pos.y
-
 }
+
+function createScoreBoard(data){
+	console.log(data[Object.keys(data)[0]], data)
+	const board = document.getElementById('health')
+	const individual = document.createElement('p')
+
+	individual.innerHTML = `${data[Object.keys(data)[0]]} <code id=${Object.keys(data)[0]}></code>`
+	board.appendChild(individual)
+}
+
+function displayHealth(data, id){
+	// console.log(data)
+	document.getElementById(id).innerHTML = data.health
+}
+
+

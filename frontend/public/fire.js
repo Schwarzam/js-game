@@ -1,5 +1,6 @@
 socket.on('newBullets', handleNewBullets)
 socket.on('bulletsState', updateBullets)
+// socket.on('playerHit', playerHit)
 
 gameScreen.addEventListener('pointerdown', fireFunction)
 gameScreen.addEventListener('pointerup', deFireFunction)
@@ -14,11 +15,10 @@ function fireFunction(e) {
 }
 
 function deFireFunction(e) {
-	console.log('defire')
+	
 }
 
 function handleNewBullets(newBullets){
-	console.log(newBullets)
 	for (i in newBullets){
 		bullets[newBullets[i].id] = createBullet(newBullets[i])
 	}
@@ -39,12 +39,15 @@ function createBullet(newBullet) {
 	return bullet
 }
 
+let lastBulletsState
+
 function updateBullets(bulletsState){
 	for (i in bulletsState){
-		if (bulletsState[i].posX < -99 || bulletsState[i].posX > 1500 || bulletsState[i].posY < -99 || bulletsState[i].posY > 1500){
+		if (bulletsState[i].dead){
 			app.stage.removeChild(bullets[bulletsState[i].id])
 			delete bullets[bulletsState[i].id]
 		}else{
+
 			bullets[bulletsState[i].id].x = bulletsState[i].posX
 			bullets[bulletsState[i].id].y = bulletsState[i].posY
 		}
