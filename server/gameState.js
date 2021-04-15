@@ -2,7 +2,7 @@ module.exports = {
 	gameState,
 	gameLoop,
 	initGame,
-	addPlayer
+	addPlayer,
 }
 
 function initGame(playerIdentifier) {
@@ -68,4 +68,5 @@ function gameLoop(state) {
 		state.players[Object.keys(state.players)[i]].vel = {x: 0, y: 0}
 	}
 }
+
 

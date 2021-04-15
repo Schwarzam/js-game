@@ -2,12 +2,39 @@ const express = require("express");
 const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
 app.use(express.static("frontend/public"));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const { makeid } = require('./server/utils')
 // const { startGameInterval } = require('./server/gameSocket')
 const { gameState, gameLoop, initGame, addPlayer } = require('./server/gameState')
+
+const { firingBullet } = require('./server/gun_system/firing')
 const { weapons } = require('./server/weapons')
+
+const db = require("./server/database");
+
+require('./server/routes/auth.routes')(app);
+require('./server/routes/user.routes')(app);
+
+
+db.mongoose
+  .connect("mongodb+srv://gustavoschwarz:asdflkjh@cluster0.oigo0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Successfully connected to MongoDB.");
+    db.initial()
+  })
+  .catch(err => {
+    console.error("Connection error", err);
+    process.exit();
+  });
 
 state = {};
 clientRooms = {};
@@ -90,7 +117,7 @@ io.on('connection', client => {
 	// })
 
 	client.on('fireBullet', function(bullet){
-		firingBullet(bullet, client)
+		firingBullet(bullet, client, state)
 	})
 
 	client.on('gameStatus', function(code){
@@ -115,15 +142,17 @@ io.on('connection', client => {
 		const vel = moveClient(keyCode);
 		if (vel) {
 			try{
-				if (state[roomName].players[client.id].vel.x === 0){
-					state[roomName].players[client.id].vel.x += vel.x;
-				}
-				if (state[roomName].players[client.id].vel.y === 0){
-					state[roomName].players[client.id].vel.y += vel.y;
-				}
-				if (Math.abs(state[roomName].players[client.id].vel.x) > 3 && Math.abs(state[roomName].players[client.id].vel.y) > 3){	
-					state[roomName].players[client.id].vel.x = state[roomName].players[client.id].vel.x/1.4
-					state[roomName].players[client.id].vel.y = state[roomName].players[client.id].vel.y/1.4
+				if (!state[roomName].players[client.id].dead){
+					if (state[roomName].players[client.id].vel.x === 0){
+						state[roomName].players[client.id].vel.x += vel.x;
+					}
+					if (state[roomName].players[client.id].vel.y === 0){
+						state[roomName].players[client.id].vel.y += vel.y;
+					}
+					if (Math.abs(state[roomName].players[client.id].vel.x) > 3 && Math.abs(state[roomName].players[client.id].vel.y) > 3){	
+						state[roomName].players[client.id].vel.x = state[roomName].players[client.id].vel.x/1.4
+						state[roomName].players[client.id].vel.y = state[roomName].players[client.id].vel.y/1.4
+					}
 				}
 			}catch(err){
 				console.error(err)
@@ -208,41 +237,6 @@ function chooseGun(client, gun){
 
 	}
 	
-}
-
-function firingBullet(bullet, client){
-	try{
-		const roomName = clientRooms[client.id];
-		var damage = state[roomName].players[client.id].gunState.damage;
-
-		if (+new Date() - state[roomName].players[client.id].lastFire < state[roomName].players[client.id].gunState.fire_rate * 1000){
-
-		}else{
-		
-			var x = state[roomName].players[client.id].pos.x
-			var y = state[roomName].players[client.id].pos.y
-			
-			const a = Math.atan2(bullet.mouseY - y, bullet.mouseX - x);
-			const id = state[roomName].bullets.numBullets
-
-			newBullet = {
-							id: id,
-							angle: a * 180/Math.PI, 
-							posX: x + Math.cos(a) * 30,
-							posY: y + Math.sin(a) * 50,
-							speedX: Math.cos(a) * state[roomName].players[client.id].gunState.bullet_speed,
-							speedY: Math.sin(a) * state[roomName].players[client.id].gunState.bullet_speed,
-							damage: damage
-						}
-
-			state[roomName].bullets.newBullets[state[roomName].bullets.numBullets] = newBullet
-			state[roomName].bullets.bullets[state[roomName].bullets.numBullets] = newBullet
-			state[roomName].bullets.numBullets = state[roomName].bullets.numBullets + 1	
-
-			state[roomName].players[client.id].lastFire = +new Date();
-		}
-
-	}catch(e){console.error(e)}
 }
 
 
