@@ -27,6 +27,8 @@ function gameState() {
 			newBullets: {},
 			bullets: {},
 		},
+		alive: {},
+		gameOver: false
 	};
 }
 
@@ -41,7 +43,8 @@ function playerDefault(){
 				y: 0
 			},
 			health: 100,
-			gunState: {}
+			gunState: {},
+			last_alive: '',
 		}
 }
 

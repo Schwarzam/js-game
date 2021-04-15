@@ -29,6 +29,7 @@ io.on('connection', client => {
 		client.join(roomName)
 
 		chooseGun(client, 'scout')
+		state[roomName].gameMode = 'PVP'
 
 		io.sockets.in(roomName)
 			.emit('roomPlayers', [{[client.id]: client.name}]);
@@ -61,7 +62,6 @@ io.on('connection', client => {
 
 		chooseGun(client, 'scout')
 
-		console.log(state[gameCode].players)
 		var arr = []
 		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
 			io.sockets.sockets.forEach(function(each) {
@@ -80,7 +80,9 @@ io.on('connection', client => {
 		try{
 			const roomName = clientRooms[client.id];
 			state[roomName].players[client.id].mousePos = mousePos
-		}catch(err){console.log(err)}
+		}catch(err){
+
+		}
 	})
 	// client.on('geralConstant', function(geralConstant){
 	// 	const roomName = clientRooms[client.id];
@@ -92,6 +94,15 @@ io.on('connection', client => {
 	})
 
 	client.on('gameStatus', function(code){
+		state[code].backup = state[code]
+		state[code].backup = state[code]
+
+		for (i in Object.keys(state[code].players)){
+			state[code].alive[Object.keys(state[code].players)[i]] = 0
+		}
+
+		console.log(state[code].alive)
+
 		state[code].onGoing = true
 		io.sockets.in(code)
 			.emit('startGame', 'start');
@@ -102,10 +113,7 @@ io.on('connection', client => {
 	client.on('keyDown', function(keyCode) {
 		const roomName = clientRooms[client.id];
 		const vel = moveClient(keyCode);
-
-
 		if (vel) {
-
 			try{
 				if (state[roomName].players[client.id].vel.x === 0){
 					state[roomName].players[client.id].vel.x += vel.x;
@@ -118,7 +126,7 @@ io.on('connection', client => {
 					state[roomName].players[client.id].vel.y = state[roomName].players[client.id].vel.y/1.4
 				}
 			}catch(err){
-				console.log(err)
+				console.error(err)
 			}
 		}
 	})
@@ -162,9 +170,11 @@ function moveClient(keyCode){
 
 function startGameInterval(roomName) {
 	const intervalId = setInterval(() => {
-		const game = gameLoop(state[roomName]);
-		emitGameState(roomName, state[roomName]);
-		updateBullets(roomName)
+		if (!state[roomName].gameOver){
+			const game = gameLoop(state[roomName]);
+			emitGameState(roomName, state[roomName]);
+			updateBullets(roomName)
+		}
 	}, 1000 / 50)
 }
 
@@ -180,8 +190,13 @@ function emitGameState(roomName){
 }
 
 function chooseGun(client, gun){
-	const roomName = clientRooms[client.id];
-	state[roomName].players[client.id].gunState = weapons()[gun]
+	try{
+		const roomName = clientRooms[client.id];
+		state[roomName].players[client.id].gunState = weapons()[gun]
+	}catch(e){
+
+	}
+	
 }
 
 function firingBullet(bullet, client){
@@ -215,13 +230,12 @@ function firingBullet(bullet, client){
 
 			state[roomName].players[client.id].lastFire = +new Date();
 		}
-		
-	}catch(e){console.log(e)}
+
+	}catch(e){console.error(e)}
 }
 
 
 function updateBullets(roomName){
-
 	const keys = Object.keys(state[roomName].bullets.bullets)
 	for (i in keys){
 
@@ -244,14 +258,28 @@ function updateBullets(roomName){
 }
 
 function checkIfHit(roomName ,BulletPosx, BulletPosy, damage, BulletId){
-
+	var numPlayers = io.sockets.adapter.rooms.get(roomName).size
+	var countDead = 0
 	for (i in Object.keys(state[roomName].players)){
+		
 		if (BulletPosx > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x - 13 && BulletPosx < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.x + 13 && BulletPosy > state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y -32 && BulletPosy < state[roomName].players[Object.keys(state[roomName].players)[i]].pos.y + 32){
 			state[roomName].players[Object.keys(state[roomName].players)[i]].health -= damage
 			state[roomName].bullets.bullets[BulletId].dead = true
+
+			if (state[roomName].players[Object.keys(state[roomName].players)[i]].health < 1){
+				state[roomName].players[Object.keys(state[roomName].players)[i]].dead = true
+
+				delete state[roomName].alive[Object.keys(state[roomName].players)[i]]
+				console.log(Object.keys(state[roomName].players)[i], `dead`)
+			}
+			if (Object.keys(state[roomName].alive).length === 1 && state[roomName].gameMode === 'PVP'){
+				state[roomName].gameOver = true
+				
+				console.log(Object.keys(state[roomName].alive)[0], 'winner')
+				io.sockets.in(roomName)
+					.emit('winner', Object.keys(state[roomName].alive)[0])
+			}
+
 		}
-		
-		// state.players[Object.keys(state.players)[i]].pos.y
-		// state.players[Object.keys(state.players)[i]].vel = {x: 0, y: 0}
 	}
 }

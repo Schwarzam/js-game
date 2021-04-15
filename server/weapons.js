@@ -9,10 +9,10 @@ function weapons(){
 			gunName: 'scout',
 			magazine: 10,
 			fire_rate: 1,
-			bullet_speed: 11,
+			bullet_speed: 25,
 			reload_time: 3,
 			damage: 40,
-			url: 'img/weapons/scout.png'
+			url: '/imgs/weapons/scout.png'
 		}
 	}
 }

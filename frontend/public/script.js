@@ -61,7 +61,7 @@ function doneLoading(e) {
 	
 	//Create player for each in lobby
 	for (i in players) {
-		createPlayer(Object.keys(players[i])[0]);
+		createPlayer(Object.keys(players[i])[0], players[i]);
 		createScoreBoard(players[i]);
 		createGun(Object.keys(players[i])[0]);
 	}
@@ -93,7 +93,7 @@ function createPlayerSheet(){
 	]
 }
 
-function createPlayer(n) {
+function createPlayer(n, data) {
 	player[`${n}`] = new PIXI.AnimatedSprite(playerSheet.standSouth);
 	player[`${n}`].anchor.set(0.5);
 	player[`${n}`].animationSpeed = .5
@@ -106,10 +106,25 @@ function createPlayer(n) {
 	player[`${n}`].y = app.view.height / 2;
 
 	app.stage.addChild(player[`${n}`]);
+
+
+	player[`${n}`].nameTop = new PIXI.Text(`${data[Object.keys(data)[0]]}` , {
+	    fontFamily: 'Snippet',
+	    fontSize: sizingObjects(14),
+	    fill: 'black',
+	    align: 'center',
+	});
+	player[`${n}`].nameTop.position.set(player[`${n}`].x, player[`${n}`].y - 40);
+
+	app.stage.addChild(player[`${n}`].nameTop);
 }
 
-function createGun(n) {
-	let gun = new PIXI.BaseTexture.from("/imgs/scout.png")
+function createGun(n, url = undefined) {
+	if (!url){
+		url = "/imgs/weapons/scout.png"
+	}
+
+	let gun = new PIXI.BaseTexture.from(url)
 
 	player[`${n}`].gun = new PIXI.AnimatedSprite([new PIXI.Texture(gun, new PIXI.Rectangle(0, 0, 64, 64))]);
 	player[`${n}`].gun.width = sizingObjects(64)
@@ -170,6 +185,8 @@ function walk(obj, n){
 		player[`${n}`].gun.y = player[`${n}`].y 
 
 		player[`${n}`].gun.angle = Math.atan2(obj.mousePos.y - player[`${n}`].y, obj.mousePos.x - player[`${n}`].x) * 180 / Math.PI;
+
+		player[`${n}`].nameTop.position.set(player[`${n}`].x -20, player[`${n}`].y - 40);
 	}catch{
 		
 	}

@@ -9,6 +9,7 @@ socket.on('tooManyPlayers', handleTooManyPlayers)
 socket.on('roomPlayers', handleRoomPlayers)
 
 socket.on('startGame', handleStartGame)
+socket.on('winner', handleWin)
 
 function setId(id){
 	myId = id;
@@ -33,7 +34,25 @@ function reset() {
 }
 
 function sendMousePosition() {
+	console.log(`send`)
 	setInterval(function() {
 	  socket.emit('mousePos', mousePos)
 	}, 100);
+}
+
+function handleWin(id) {
+	var winner;
+	for (i in players){
+		if (Object.keys(players[i])[0] === id){
+			const textSample = new PIXI.Text(`${players[i][Object.keys(players[i])[0]]} won!` , {
+		        fontFamily: 'Snippet',
+		        fontSize: sizingObjects(50),
+		        fill: 'white',
+		        align: 'left',
+		    });
+		    textSample.position.set(50, 200);
+
+		    app.stage.addChild(textSample);
+		}
+	}
 }
