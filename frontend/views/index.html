@@ -15,12 +15,18 @@
     <link rel="stylesheet" href="/style.css">
 
     <!-- import the webpage's client-side javascript file -->
+    <script src="/pages/lobby.js" defer></script>
+
+
     <script src = "/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi.min.js"></script>
     <script src="/script.js" defer></script>
     <script src="/initial.js" defer></script>
-    <script src="/socket.js" defer></script>
     <script src="/fire.js" defer></script>
+    <script src="/socket.js" defer></script>
+    
+
+
 
     <style type="text/css">
       #gameScreen{
@@ -64,18 +70,6 @@
         </div>
 
         <div id="lobby" class="h-100">
-          <div class="d-flex flex-column align-items-center justify-content-center h-100">
-            <h3>Players in lobby</h3>
-            <br>
-            <br>
-            <div id="lobbyPlayers">
-              <p>You</p>
-            </div>
-            <br>
-            <br>
-            <button type="submit" class="btn btn-primary" id='startGame'>Start Game</button>
-          </div>
-          
         </div>
 
         <div id="gameScreen" class="h-100">

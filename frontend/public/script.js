@@ -9,7 +9,6 @@ function handleGameState(data){
     		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     		displayHealth(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
 
-    		console.log(instructions[Object.keys(instructions)[i]])
     		if (instructions[Object.keys(instructions)[i]].dead){
     			player[`${Object.keys(instructions)[i]}`].textures = playerSheet['dead']
     		}
@@ -55,7 +54,10 @@ function init() {
     document.getElementById('GAME').appendChild(app.view);
     app.loader.load(doneLoading);
 
-    window.addEventListener("keydown", keysDown)
+    window.addEventListener("keydown", function(data){
+    	keysDown(data)
+    	otherKeys(data)
+    })
     window.addEventListener("keyup", keysUp)
 
     keysDiv = document.querySelector("#keys")
@@ -70,7 +72,6 @@ function doneLoading(e) {
 		createScoreBoard(players[i]);
 		createGun(Object.keys(players[i])[0]);
 	}
-	
 	app.ticker.add(gameLoop);
 }
 
@@ -170,6 +171,10 @@ function gameLoop(e) {
 	if (keys["83"]) {
 		socket.emit('keyDown', 83)
 	}
+}
+
+function otherKeys(e) {
+	socket.emit('keyDown', e.keyCode)
 }
 
 function walk(obj, n){

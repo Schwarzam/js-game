@@ -11,6 +11,8 @@ socket.on('roomPlayers', handleRoomPlayers)
 socket.on('startGame', handleStartGame)
 socket.on('winner', handleWin)
 
+socket.on('changeGun', handleGunChange)
+
 function setId(id){
 	myId = id;
 }

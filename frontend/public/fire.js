@@ -65,3 +65,12 @@ function updateBullets(bulletsState){
 		}
 	}
 }
+
+function handleGunChange(data){
+	try{
+		app.stage.removeChild(player[`${data.id}`].gun)
+		delete player[`${data.id}`].gun
+
+		createGun(data.id, data.url)
+	}catch{}
+}

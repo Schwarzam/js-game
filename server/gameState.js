@@ -43,8 +43,8 @@ function playerDefault(){
 				y: 0
 			},
 			health: 100,
-			gunState: {},
-			last_alive: '',
+			gunState: '',
+			inventory: ['scout', 'glock'],
 		}
 }
 

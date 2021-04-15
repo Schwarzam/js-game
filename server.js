@@ -21,33 +21,22 @@ const db = require("./server/database");
 require('./server/routes/auth.routes')(app);
 require('./server/routes/user.routes')(app);
 
-
-db.mongoose
-  .connect("mongodb+srv://gustavoschwarz:asdflkjh@cluster0.oigo0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-  })
-  .then(() => {
-    console.log("Successfully connected to MongoDB.");
-    db.initial()
-  })
-  .catch(err => {
-    console.error("Connection error", err);
-    process.exit();
-  });
-
 state = {};
 clientRooms = {};
 
 io.on('connection', client => {
-	
+
 	client.on('clientName', function(name) {
 		client.name = name;
+		client.token = null;
+		client.member = false;
+
 		client.emit('clientId', client.id)
 	})
 
 	//NEW GAME
 	client.on('newGame', function() {
+		console.log(client.id)
 		let roomName = makeid(5);
 		clientRooms[client.id] = roomName;
 		client.emit('gameCode', roomName);
@@ -55,7 +44,7 @@ io.on('connection', client => {
 		state[roomName] = initGame(client.id);
 		client.join(roomName)
 
-		chooseGun(client, 'scout')
+		chooseGun(client, 1)
 		state[roomName].gameMode = 'PVP'
 
 		io.sockets.in(roomName)
@@ -87,7 +76,7 @@ io.on('connection', client => {
 		client.number = numClients + 1;
 		state[gameCode] = addPlayer(state[gameCode], client.id)
 
-		chooseGun(client, 'scout')
+		chooseGun(client, 1)
 
 		var arr = []
 		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
@@ -139,15 +128,18 @@ io.on('connection', client => {
 	//KEYS PRESSED 
 	client.on('keyDown', function(keyCode) {
 		const roomName = clientRooms[client.id];
-		const vel = moveClient(keyCode);
-		if (vel) {
+		const res = moveClient(keyCode);
+		console.log(res)
+		if (Number.isInteger(res)){
+			chooseGun(client, res)
+		}else if (res) {
 			try{
 				if (!state[roomName].players[client.id].dead){
 					if (state[roomName].players[client.id].vel.x === 0){
-						state[roomName].players[client.id].vel.x += vel.x;
+						state[roomName].players[client.id].vel.x += res.x;
 					}
 					if (state[roomName].players[client.id].vel.y === 0){
-						state[roomName].players[client.id].vel.y += vel.y;
+						state[roomName].players[client.id].vel.y += res.y;
 					}
 					if (Math.abs(state[roomName].players[client.id].vel.x) > 3 && Math.abs(state[roomName].players[client.id].vel.y) > 3){	
 						state[roomName].players[client.id].vel.x = state[roomName].players[client.id].vel.x/1.4
@@ -163,6 +155,10 @@ io.on('connection', client => {
 	client.on('ping', function() {
 	    client.emit('pong');
 	});
+})
+
+io.on('disconnect', client => {
+	console.log(client.id)
 })
 
 app.get("/", (request, response) => {
@@ -184,15 +180,20 @@ function moveClient(keyCode){
 	switch (keyCode) {
 		case 87: { // W up
 			return { x: 0, y: -5 }
-		}
-		case 65: { //A left
+		}case 65: { //A left
 			return { x: -5, y: 0 }
-		}
-		case 68: { //D right
+		}case 68: { //D right
 			return { x: 5, y: 0 }
-		}
-		case 83: { // S down
+		}case 83: { // S down
 			return { x: 0, y: 5 }
+		}case 49: {
+			return 1
+		}case 50: {
+			return 2
+		}case 51: {
+			return 3
+		}case 52: {
+			return 4
 		}
 	}
 }
@@ -229,14 +230,21 @@ function emitGameState(roomName){
 	}
 }
 
-function chooseGun(client, gun){
+function chooseGun(client, res){
 	try{
 		const roomName = clientRooms[client.id];
+
+		if (res > state[roomName].players[client.id].inventory.length){
+			res = state[roomName].players[client.id].inventory.length
+		}
+		const gun = state[roomName].players[client.id].inventory[res - 1]
 		state[roomName].players[client.id].gunState = weapons()[gun]
+
+		io.sockets.in(roomName)
+			.emit('changeGun', {id: client.id, url: state[roomName].players[client.id].gunState.url});
 	}catch(e){
 
 	}
-	
 }
 
 
