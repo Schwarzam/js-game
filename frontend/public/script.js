@@ -8,6 +8,11 @@ function handleGameState(data){
     	for (i in Object.keys(instructions)){
     		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     		displayHealth(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
+
+    		console.log(instructions[Object.keys(instructions)[i]])
+    		if (instructions[Object.keys(instructions)[i]].dead){
+    			player[`${Object.keys(instructions)[i]}`].textures = playerSheet['dead']
+    		}
     	}	
     }
 }
@@ -74,6 +79,7 @@ function createPlayerSheet(){
 	let north = new PIXI.BaseTexture.from("/imgs/p_default_costa.png")
 	let east = new PIXI.BaseTexture.from("/imgs/p_default_direita.png")
 	let west = new PIXI.BaseTexture.from("/imgs/p_default_esquerda.png")
+	let dead = new PIXI.BaseTexture.from("/imgs/dead.png")
 
 	console.log(sizingObjects(64))
 	let w = 64;
@@ -90,6 +96,9 @@ function createPlayerSheet(){
 	]
 	playerSheet['standNorth'] = [
 		new PIXI.Texture(north, new PIXI.Rectangle(0 * w, 0, w, h))
+	]
+	playerSheet['dead'] = [
+		new PIXI.Texture(dead, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
 }
 

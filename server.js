@@ -170,12 +170,23 @@ function moveClient(keyCode){
 
 function startGameInterval(roomName) {
 	const intervalId = setInterval(() => {
+		const game = gameLoop(state[roomName]);
+		emitGameState(roomName, state[roomName]);
+		updateBullets(roomName)
 		if (!state[roomName].gameOver){
-			const game = gameLoop(state[roomName]);
-			emitGameState(roomName, state[roomName]);
-			updateBullets(roomName)
+			checkWin(roomName)
 		}
 	}, 1000 / 50)
+}
+
+function checkWin(roomName) {
+	if (Object.keys(state[roomName].alive).length === 1 && state[roomName].gameMode === 'PVP'){
+				state[roomName].gameOver = true
+				
+				console.log(Object.keys(state[roomName].alive)[0], 'winner')
+				io.sockets.in(roomName)
+					.emit('winner', Object.keys(state[roomName].alive)[0])
+	}
 }
 
 function emitGameState(roomName){
@@ -270,14 +281,6 @@ function checkIfHit(roomName ,BulletPosx, BulletPosy, damage, BulletId){
 				state[roomName].players[Object.keys(state[roomName].players)[i]].dead = true
 
 				delete state[roomName].alive[Object.keys(state[roomName].players)[i]]
-				console.log(Object.keys(state[roomName].players)[i], `dead`)
-			}
-			if (Object.keys(state[roomName].alive).length === 1 && state[roomName].gameMode === 'PVP'){
-				state[roomName].gameOver = true
-				
-				console.log(Object.keys(state[roomName].alive)[0], 'winner')
-				io.sockets.in(roomName)
-					.emit('winner', Object.keys(state[roomName].alive)[0])
 			}
 
 		}
