@@ -7,8 +7,8 @@
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "electron.js",
   "scripts": {
-    "start": "electron .",
-    "server": "nodemon server.js"
+    "server": "electron .",
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
