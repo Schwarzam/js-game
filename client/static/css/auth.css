@@ -1,0 +1,42 @@
+.loginPage{
+	text-align: center;
+}
+
+.loginPage h3{
+	padding: 50px;
+}
+
+.loginPage small{
+	padding: 12px;
+	border: 1px solid black;
+	position: absolute;
+	left: 20px;
+	top: 20px;
+	cursor: pointer;
+}
+
+.btn{
+	margin-top: 10px;
+}
+
+.Login{
+	display: grid;
+	max-width: 300px;
+	margin: auto;
+	text-align: center;
+	margin-top: 5%;
+}
+
+.registerHere{
+	padding: 30px;
+}
+
+.inputLogin{
+	border: none;
+	border-bottom: 1px solid black;
+	padding: 15px;
+}
+
+.inputLogin:focus, .inputLogin:focus{
+    outline: none;
+}

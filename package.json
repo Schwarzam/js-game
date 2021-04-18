@@ -5,9 +5,10 @@
   "name": "hello-express",
   "version": "0.0.1",
   "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
+  "main": "electron.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "electron .",
+    "server": "nodemon server.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -30,5 +31,8 @@
     "node",
     "glitch",
     "express"
-  ]
+  ],
+  "devDependencies": {
+    "electron": "^12.0.4"
+  }
 }
