@@ -18,7 +18,7 @@ exports.signup = (req, res) => {
   user.save((err, user) => {
     console.log(user)
     if (err) {
-      res.status(500).send({ message: err });
+      res.send({ message: err });
       return;
     }
 
@@ -29,14 +29,14 @@ exports.signup = (req, res) => {
         },
         (err, roles) => {
           if (err) {
-            res.status(500).send({ message: err });
+            res.send({ message: err });
             return;
           }
 
           user.roles = roles.map(role => role._id);
           user.save(err => {
             if (err) {
-              res.status(500).send({ message: err });
+              res.send({ message: err });
               return;
             }
 
@@ -47,14 +47,14 @@ exports.signup = (req, res) => {
     } else {
       Role.findOne({ name: "user" }, (err, role) => {
         if (err) {
-          res.status(500).send({ message: err });
+          res.send({ message: err });
           return;
         }
 
         user.roles = [role._id];
         user.save(err => {
           if (err) {
-            res.status(500).send({ message: err });
+            res.send({ message: err });
             return;
           }
 
@@ -66,18 +66,19 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
+  console.log(req.data)
   User.findOne({
     username: req.body.username
   })
     .populate("roles", "-__v")
     .exec((err, user) => {
       if (err) {
-        res.status(500).send({ message: err });
+        res.send({ message: err });
         return;
       }
 
       if (!user) {
-        return res.status(404).send({ message: "User Not found." });
+        return res.send({ message: "User Not found." });
       }
 
       var passwordIsValid = bcrypt.compareSync(
@@ -86,7 +87,7 @@ exports.signin = (req, res) => {
       );
 
       if (!passwordIsValid) {
-        return res.status(401).send({
+        return res.send({
           accessToken: null,
           message: "Invalid Password!"
         });

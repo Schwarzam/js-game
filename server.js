@@ -12,8 +12,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 const db = require("./server/database");
 
-require('./server/routes/auth.routes')(app);
 require('./server/routes/user.routes')(app);
+require('./server/routes/auth.routes')(app);
 
 state = {};
 clientRooms = {};
