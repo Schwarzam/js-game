@@ -7,13 +7,20 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
+  if (req.body.username.length > 14){
+    res.send({ message: "Username too long. Max 14 characters" });
+    return;
+  }
+  if (req.body.password.length < 8) {
+    res.send({ message: "Password must be at least 8 characters" });
+    return;    
+  }
+
   const user = new User({
     username: req.body.username,
     email: req.body.email,
     password: bcrypt.hashSync(req.body.password, 8)
   });
-
-  console.log(User)
 
   user.save((err, user) => {
     console.log(user)
