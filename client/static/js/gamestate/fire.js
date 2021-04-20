@@ -11,7 +11,7 @@ function updateMousePos(e){
 function fireFunction(e){
 
 	var rect = e.target.getBoundingClientRect();
-	const a = Math.atan2((e.clientY - rect.top) - myGameState.pos.y, (e.clientX - rect.left) - myGameState.pos.x);
+	const a = Math.atan2(reverseSizingObjects(e.clientY - rect.top) - myGameState.pos.y, reverseSizingObjects(e.clientX - rect.left) - myGameState.pos.x);
 
 	newBullet = {
 					id: counter.toString() + myId,
