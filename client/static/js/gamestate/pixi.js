@@ -9,6 +9,11 @@ function reverseSizingObjects(num){
 
 //Init the gamescreen
 function initGame() {
+	socket.emit('startGame')
+
+	redirectPage('game')
+	clearInterval(lobbyInterval)
+
 	geralWidth = window.innerWidth < 1500 ? window.innerWidth - window.innerWidth*0.1 : 1350
 	geralConstant = geralWidth/1350
 
@@ -18,97 +23,106 @@ function initGame() {
         backgroundColor: 0xAAAAAA,
     })
 
-    document.getElementById('GAME').appendChild(app.view);
+    setTimeout(function(){
+    	const game = document.getElementById('GAME')
+    	game.appendChild(app.view);
+    }, 1500)
+    
     app.loader.load(doneLoading);
-
-    console.log('game')
-
-    updateMyGame()
-
-    // window.addEventListener("keydown", function(data){
-    // 	keysDown(data)
-    // 	otherKeys(data)
-    // })
-    // window.addEventListener("keyup", keysUp)
+    updateMyGame()    
     // keysDiv = document.querySelector("#keys")
 }
 
 function updateMyGame() {
-	const Interval = setInterval(() => {
-		socket.emit('updateClient', gameState[myId])
-	}, 1000/30)
+	const Interval = setInterval(async () => {
+		myMove()
+
+		socket.emit('updateClient', myGameState)
+	}, 1000/50)
 }
 
 function doneLoading(e) {
-	createPlayerSheet();
-	
+	const players = gameState.players
+
 	//Create player for each in lobby
 	for (i in players) {
-		createPlayer(Object.keys(players[i])[0], players[i]);
-		createScoreBoard(players[i]);
-		createGun(Object.keys(players[i])[0]);
-	}
 
-	app.ticker.add(gameLoop);
+		const newPlayer = createPlayerSheet(i);
+
+		createPlayer(i, players[i], newPlayer); // Pass Id and data of each player
+		createScoreBoard(i, players[i]); // Pass data 
+		createGun(i); // Pass Id
+	}
 }
 
-function createPlayerSheet(){
-	let south = new PIXI.BaseTexture.from("/imgs/p_default_frente.png")
-	let north = new PIXI.BaseTexture.from("/imgs/p_default_costa.png")
-	let east = new PIXI.BaseTexture.from("/imgs/p_default_direita.png")
-	let west = new PIXI.BaseTexture.from("/imgs/p_default_esquerda.png")
-	let dead = new PIXI.BaseTexture.from("/imgs/dead.png")
+function createPlayerSheet(id){
+	const character = 'default'
 
-	console.log(sizingObjects(64))
+	const newPlayer = {}
+	
+	newPlayer.skin = new PIXI.BaseTexture.from(IP + "/imgs/personagens/" + character + "/" + character + '.png')
+
 	let w = 64;
 	let h = 64;
 
-	playerSheet['standSouth'] = [
-		new PIXI.Texture(south, new PIXI.Rectangle(0 * w, 0, w, h))
+
+	newPlayer['standSouth'] = [
+		new PIXI.Texture(newPlayer.skin, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
-	playerSheet['standWest'] = [
-		new PIXI.Texture(west, new PIXI.Rectangle(0 * w, 0, w, h))
+	newPlayer['standWest'] = [
+		new PIXI.Texture(newPlayer.skin, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
-	playerSheet['standEast'] = [
-		new PIXI.Texture(east, new PIXI.Rectangle(0 * w, 0, w, h))
+	newPlayer['standEast'] = [
+		new PIXI.Texture(newPlayer.skin, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
-	playerSheet['standNorth'] = [
-		new PIXI.Texture(north, new PIXI.Rectangle(0 * w, 0, w, h))
+	newPlayer['standNorth'] = [
+		new PIXI.Texture(newPlayer.skin, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
-	playerSheet['dead'] = [
-		new PIXI.Texture(dead, new PIXI.Rectangle(0 * w, 0, w, h))
+	newPlayer['dead'] = [
+		new PIXI.Texture(newPlayer.skin, new PIXI.Rectangle(0 * w, 0, w, h))
 	]
+
+	playerSheet[id] = newPlayer
+	return newPlayer
 }
 
-function createPlayer(n, data) {
-	player[`${n}`] = new PIXI.AnimatedSprite(playerSheet.standSouth);
-	player[`${n}`].anchor.set(0.5);
-	player[`${n}`].animationSpeed = .5
-	player[`${n}`].width = sizingObjects(64)
-	player[`${n}`].height = sizingObjects(64)
+function createPlayer(id, data, newPlayer) {
+	player[`${id}`] = new PIXI.AnimatedSprite(playerSheet[id].standSouth);
+	player[`${id}`].anchor.set(0.5);
+	player[`${id}`].animationSpeed = .5
+	player[`${id}`].width = sizingObjects(64)
+	player[`${id}`].height = sizingObjects(64)
+	player[`${id}`].loop = false;
+	player[`${id}`].x = app.view.width / 2;
+	player[`${id}`].y = app.view.height / 2;
 
-	player[`${n}`].loop = false;
+	app.stage.addChild(player[`${id}`]);
 
-	player[`${n}`].x = app.view.width / 2;
-	player[`${n}`].y = app.view.height / 2;
+	var name = 'guest';
+	if (data.name) {
+		name = data.name
+	}
 
-	app.stage.addChild(player[`${n}`]);
-
-
-	player[`${n}`].nameTop = new PIXI.Text(`${data[Object.keys(data)[0]]}` , {
+	player[`${id}`].nameTop = new PIXI.Text(`${name}` , {
 	    fontFamily: 'Snippet',
 	    fontSize: sizingObjects(14),
 	    fill: 'black',
 	    align: 'center',
 	});
-	player[`${n}`].nameTop.position.set(player[`${n}`].x, player[`${n}`].y - 40);
 
-	app.stage.addChild(player[`${n}`].nameTop);
+	player[`${id}`].nameTop.position.set(player[`${id}`].x, player[`${id}`].y - 40);
+	app.stage.addChild(player[`${id}`].nameTop);
 }
+
+
+function gameLoop(e) {
+
+}
+
 
 function createGun(n, url = undefined) {
 	if (!url){
-		url = "/imgs/weapons/scout.png"
+		url = IP + "/imgs/weapons/scout.png"
 	}
 
 	let gun = new PIXI.BaseTexture.from(url)
@@ -118,9 +132,20 @@ function createGun(n, url = undefined) {
 	player[`${n}`].gun.height = sizingObjects(64)
 	player[`${n}`].gun.x = player[`${n}`].x 
 	player[`${n}`].gun.y = player[`${n}`].y + 10
-
 	player[`${n}`].gun.anchor.set(0.5)
 	player[`${n}`].gun.scale.x = -1;
 
 	app.stage.addChild(player[`${n}`].gun);
+}
+
+function createScoreBoard(i, data){
+	setTimeout(function(){
+			const board = document.getElementById('health')
+			const individual = document.createElement('p')
+			individual.style.padding = '12px'
+
+			individual.innerHTML = `${(data.name ? data.name : 'guest')} <code id=${i}></code>`
+			board.appendChild(individual)
+		}, 1500)
+
 }

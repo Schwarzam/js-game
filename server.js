@@ -39,11 +39,13 @@ io.on('connection', client => {
 
 		//Inicia uma sala com um player
 		state[roomName] = initGame(client.id)
-		startGameLoop(roomName)
+		
 		client.join(roomName)
 
-		state[roomName].gameMode = 'PVP'
-		clientRooms[client.id] = client.id
+		state[roomName].gameMode = 'PVP';
+		clientRooms[client.id] = roomName;
+
+		playersConnected(roomName)
 	})
 
 	//JOIN GAME
@@ -51,36 +53,44 @@ io.on('connection', client => {
 		const room = io.sockets.adapter.rooms.get(gameCode.trim());
 		let allUsers;
 		let numClients;
+
 		if (room){
 			numClients = room ? room.size : 0;
 		}
 		if (numClients === 0 || numClients === undefined ){
-			client.emit('unknownGame')
+			client.emit('error', 'unknownGame')
 			return;
-		} else if (numClients > 10) { // Define numero de players
-			client.emit('tooManyPlayers')
+		} else if (numClients > 6) { // Define numero de players
+			client.emit('error', 'tooManyPlayers')
 			return;
 		} 
 		clientRooms[client.id] = gameCode;
 
 		if (state[gameCode].onGoing) {
-			client.emit('tooManyPlayers')
+			client.emit('error', 'tooManyPlayers')
 			return;
 		}
-		client.join(gameCode);
-		client.number = numClients + 1;
 
-		var arr = []
-		for (let item of io.sockets.adapter.rooms.get(gameCode.trim()).values()){
-			io.sockets.sockets.forEach(function(each) {
-				if (each.id === item){
-					arr.push({[each.id] : each.name});
-				}
-			})
+		state[gameCode] = addPlayer(state[gameCode], client.id)
+		client.join(gameCode);
+		client.emit('gameJoined');
+	})
+
+	client.on('startGame', function(data){
+		const roomName = clientRooms[client.id];
+		startGameLoop(roomName);
+
+		client.emit('gameStarted')
+	})
+
+	client.on('updateClient', function(data){
+		try{
+			const roomName = clientRooms[client.id];
+			state[roomName].players[client.id] = data
+		}catch{
+			
 		}
 
-		io.sockets.in(gameCode)
-			.emit('roomPlayers', arr);
 	})
 
 	
@@ -103,10 +113,22 @@ const listener = http.listen(3000, () => {
 
 
 function startGameLoop(roomName){
+	clearInterval(state[roomName].interval)
+	delete state[roomName].interval
+
 	const interval = setInterval(() => {
 
 		io.sockets.in(roomName)
 			.emit('updateGameStatus', state[roomName]);
 
-	}, 1000/30)
+	}, 1000/50)
+}
+
+function playersConnected(roomName){
+	state[roomName].interval = setInterval(() => {
+		
+		io.sockets.in(roomName)
+			.emit('updatePlayersLobby', state[roomName]);
+
+	}, 1000)
 }

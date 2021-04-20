@@ -1,6 +1,14 @@
 socket.on('clientId', clientId)
-// socket.on('gameCode', setGameCode)
+socket.on('gameCode', setGameCode)
 socket.on('updateGameStatus', updateGameStatus)
+socket.on('error')
+
+socket.on('gameStarted', gameStarted)
+socket.on('updatePlayersLobby', updatePlayersLobby)
+
+function error(data){
+	alert(data)
+}
 
 function clientId(id){
 	myId = id;
@@ -13,11 +21,43 @@ function clientId(id){
 	}).showToast();	
 }
 
-// function setGameCode(){
-// 	gameState
-// }
+function setGameCode(code){
+	gameCode = code;
+}
 
 function updateGameStatus(data){
-	console.log(data)
 	gameState = data
+	myGameState = data.players[myId]
+
+	updateMyBullets(data)
+	walk(data)
+	updateBullets(data)
+}
+
+function updatePlayersLobby(data) {
+	gameState = data
+}
+
+function gameStarted(){
+    window.addEventListener("keydown", function(data){
+		keysDown(data)
+	// otherKeys(data)
+    })
+
+	window.addEventListener("keyup", keysUp)
+
+	const int = setInterval(() => {
+		try{
+			game = document.getElementById('GAME')
+			game.addEventListener('pointerdown', fireFunction);
+			game.addEventListener("mousemove", updateMousePos);	
+
+			if (game){
+				clearInterval(int)
+			}
+		}catch{
+
+		}		
+	}, 50)
+	
 }

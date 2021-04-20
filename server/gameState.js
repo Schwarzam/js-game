@@ -21,11 +21,6 @@ function gameState() {
 	return {
 		gameMode: '',
 		players: {},
-		bullets: {
-			numBullets: 0,
-			newBullets: {},
-			bullets: {},
-		},
 		alive: {},
 		gameOver: false
 	};
@@ -33,6 +28,7 @@ function gameState() {
 
 function playerDefault(){
 	return{
+			mousePos: {x: 0, y: 0},
 			pos: {
 				x: 610,
 				y: 309,
@@ -41,8 +37,10 @@ function playerDefault(){
 				x: 0,
 				y: 0
 			},
+			bullets: {},
 			health: 100,
 			gunState: '',
 			inventory: ['scout', 'glock'],
+			lastFire: 0
 		}
 }
