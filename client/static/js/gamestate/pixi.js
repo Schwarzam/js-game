@@ -9,13 +9,8 @@ function reverseSizingObjects(num){
 
 //Init the gamescreen
 function initGame() {
-
-	whoAmI()
-
 	geralWidth = window.innerWidth < 1500 ? window.innerWidth - window.innerWidth*0.1 : 1350
 	geralConstant = geralWidth/1350
-
-	socket.emit('geralConstant', geralConstant)
 
     app = new PIXI.Application({
         width: geralWidth,
@@ -28,12 +23,20 @@ function initGame() {
 
     console.log('game')
 
+    updateMyGame()
+
     // window.addEventListener("keydown", function(data){
     // 	keysDown(data)
     // 	otherKeys(data)
     // })
     // window.addEventListener("keyup", keysUp)
     // keysDiv = document.querySelector("#keys")
+}
+
+function updateMyGame() {
+	const Interval = setInterval(() => {
+		socket.emit('updateClient', gameState[myId])
+	}, 1000/30)
 }
 
 function doneLoading(e) {

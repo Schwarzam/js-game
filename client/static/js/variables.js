@@ -1,6 +1,6 @@
 let IP = 'http://localhost:3000'
 
-const socket = io(IP + '/')
+let socket = io(IP + '/')
 
 let app;
 let myId;

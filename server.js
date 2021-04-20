@@ -44,9 +44,6 @@ io.on('connection', client => {
 
 		state[roomName].gameMode = 'PVP'
 		clientRooms[client.id] = client.id
-
-		io.sockets.in(roomName)
-			.emit('roomPlayers', [{[client.id]: client.name}]);
 	})
 
 	//JOIN GAME
@@ -80,7 +77,7 @@ io.on('connection', client => {
 					arr.push({[each.id] : each.name});
 				}
 			})
-		} 
+		}
 
 		io.sockets.in(gameCode)
 			.emit('roomPlayers', arr);
@@ -97,7 +94,7 @@ io.on('disconnect', client => {
 })
 
 app.get("/", (request, response) => {
-  response.sendFile(__dirname + "/frontend/views/index.html");
+  response.sendFile(__dirname + "/client/htmls/index.html");
 });
 
 const listener = http.listen(3000, () => {
