@@ -4,12 +4,22 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-
-	
 </head>
 
 <body>
 	<h1>Lobby</h1>
+	    <div id="InitialScreen" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <h2>Multiplayer</h2>
+            <button type="submit" class="btn btn-success" onclick="createNewGame()">Create New Game</button>
+            <div>OR</div>
+            <div class="form-group">
+              <input type="text" id="gameCodeInput" name="" placeholder="Enter Game Code">
+            </div>
+            <button type="submit" class="btn btn-success" onclick="joinGame()">Join Game</button>
+          </div>
+        </div>
+
 	<button onclick="redirectPage('entry')">button </button>
 </body>
 </html>

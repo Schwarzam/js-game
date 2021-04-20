@@ -5,6 +5,9 @@ const io = require('socket.io')(http);
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const { makeid } = require("./server/utils")
+const { gameState, addPlayer, initGame } = require("./server/gameState")
+
 app.use(express.static("client/static"));
 
 app.use(bodyParser.json());
@@ -19,26 +22,28 @@ state = {};
 clientRooms = {};
 
 io.on('connection', client => {
-
-	client.on('clientName', function(name) {
-		client.name = name;
+	
+	client.on('connection', function(name) {
 		client.token = null;
 		client.member = false;
-
 		client.emit('clientId', client.id)
 	})
 
 	//NEW GAME
-	client.on('newGame', function() {
-		console.log(client.id)
-		let roomName = makeid(5);
+	client.on('createGame', function() {
+		let roomName = makeid(6);
 		clientRooms[client.id] = roomName;
+
+		//Manda o endereco da sala pra quem criou
 		client.emit('gameCode', roomName);
 
-		state[roomName] = initGame(client.id);
+		//Inicia uma sala com um player
+		state[roomName] = initGame(client.id)
+		startGameLoop(roomName)
 		client.join(roomName)
 
 		state[roomName].gameMode = 'PVP'
+		clientRooms[client.id] = client.id
 
 		io.sockets.in(roomName)
 			.emit('roomPlayers', [{[client.id]: client.name}]);
@@ -98,3 +103,13 @@ app.get("/", (request, response) => {
 const listener = http.listen(3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+
+function startGameLoop(roomName){
+	const interval = setInterval(() => {
+
+		io.sockets.in(roomName)
+			.emit('updateGameStatus', state[roomName]);
+
+	}, 1000/30)
+}

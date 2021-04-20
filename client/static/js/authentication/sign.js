@@ -66,7 +66,6 @@ function submitLogin(){
 	}else{
 		axios.post(`${IP}/api/auth/signin`, {username: username, password: password})
 			.then(res => {
-				console.log(res.data)
 
 				if (res.data.id){
 					Toastify({
@@ -78,7 +77,6 @@ function submitLogin(){
 
 					localStorage.setItem("user", JSON.stringify(res.data))
 					redirectPage('lobby')
-
 				}else{
 					Toastify({
 					  text: res.data.message,

@@ -11,14 +11,23 @@
 	<!-- Library Imports -->
 		<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi.min.js"></script>
 	<!-- // -->
 
 
 	<!-- Files de javascript que serao importadas -->
-		<script type="text/javascript" src="http://localhost:3000/js/variables.js" defer></script>
+		<!-- AUTH -->
 		<script type="text/javascript" src="http://localhost:3000/js/authentication/sign.js" defer></script>
 
+		<!-- ROOT -->
 		<script type="text/javascript" src="http://localhost:3000/js/initial.js" defer></script>
+		<script type="text/javascript" src="http://localhost:3000/js/variables.js" defer></script>
+		<script type="text/javascript" src="http://localhost:3000/js/socket.js" defer></script>
+
+		<!-- Game STATE -->
+		<script type="text/javascript" src="http://localhost:3000/js/gamestate/pixi.js" defer></script>
+		<script type="text/javascript" src="http://localhost:3000/js/gamestate/lobby.js" defer></script>
 	<!-- // -->
 
 	</head>
@@ -29,6 +38,8 @@
 			<h1>salve</h1>
 
 			<button onclick="redirectPage('authentication/auth')">button </button>
+			<button onclick="redirectPage('game')">game </button>
+			<button onclick="redirectPage('lobby')">lobby </button>
 
 		</div>
 	</body>

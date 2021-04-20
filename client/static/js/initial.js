@@ -5,3 +5,10 @@ function redirectPage(templateName){
 					document.getElementById('render').innerHTML = res.data
 				})
 }
+
+
+function startClient(){
+	socket.emit('connection')
+}
+
+startClient()
