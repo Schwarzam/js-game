@@ -27,11 +27,10 @@ function fireFunction(e){
 	counter = counter += 1;
 	myGameState.lastFire = +new Date();
 
-	myGameState.bullets[newBullet.id] = newBullet
+	myBullets[newBullet.id] = newBullet
 }
 
 function updateBullets(data){
-	console.log(data.players)
 	try{
 		for (i in data.players){
 			const each = data.players[i]
@@ -52,9 +51,11 @@ function updateBullets(data){
 
 function updateMyBullets(){
 	try{
-		for (i in myGameState.bullets){
-			myGameState.bullets[i].posX += myGameState.bullets[i].speedX
-			myGameState.bullets[i].posY += myGameState.bullets[i].speedY
+		for (i in myBullets){
+			myBullets[i].posX += myBullets[i].speedX
+			myBullets[i].posY += myBullets[i].speedY
+
+			console.log(myBullets[i].posX)
 		}
 	}catch(e){
 		console.log(e)

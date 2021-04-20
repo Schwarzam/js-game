@@ -11,6 +11,7 @@ let gameState = {};
 
 let player = {};
 let bullets = {};
+let myBullets = {}
 
 let keys = {};
 let keysDiv;

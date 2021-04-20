@@ -37,6 +37,7 @@ function updateMyGame() {
 	const Interval = setInterval(async () => {
 		myMove()
 
+		myGameState.bullets = myBullets
 		socket.emit('updateClient', myGameState)
 	}, 1000/50)
 }
