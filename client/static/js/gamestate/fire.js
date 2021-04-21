@@ -36,27 +36,26 @@ function updateBullets(data){
 			const each = data.players[i]
 			for (i in each.bullets){
 				if (bullets[each.bullets[i].id]) {
-
 				
-				if (data.deadBullets.includes(each.bullets[i].id)){
-					console.log(data.deadBullets)
-					app.stage.removeChild(bullets[each.bullets[i].id])
-					delete myBullets[each.bullets[i].id]
-					delete bullets[each.bullets[i].id]
-					deadBullets = []
-				}else{
+					if (data.deadBullets.includes(each.bullets[i].id)){
+						app.stage.removeChild(bullets[each.bullets[i].id])
+						delete myBullets[each.bullets[i].id]
+						delete bullets[each.bullets[i].id]
+						deadBullets.splice(deadBullets.indexOf(each.bullets[i].id), 1)
 
-					const res = checkHit(bullets[each.bullets[i].id].x, bullets[each.bullets[i].id].y)
-					if (res === 1){
-						myGameState.health -= each.bullets[i].damage
-						deadBullets.push(each.bullets[i].id)
-					}else if(res === 2){
-						deadBullets.push(each.bullets[i].id)
 					}else{
-						bullets[each.bullets[i].id].x = sizingObjects(each.bullets[i].posX)
-						bullets[each.bullets[i].id].y = sizingObjects(each.bullets[i].posY)
-					}				
-				}
+
+						const res = checkHit(bullets[each.bullets[i].id].x, bullets[each.bullets[i].id].y)
+						if (res === 1){
+							myGameState.health -= each.bullets[i].damage
+							deadBullets.push(each.bullets[i].id)
+						}else if(res === 2){
+							deadBullets.push(each.bullets[i].id)
+						}else{
+							bullets[each.bullets[i].id].x = sizingObjects(each.bullets[i].posX)
+							bullets[each.bullets[i].id].y = sizingObjects(each.bullets[i].posY)
+						}				
+					}
 
 				}else{
 					console.log('bullet')
@@ -103,11 +102,4 @@ function createBullet(newBullet) {
 
 	app.stage.addChild(bullet);
 	return bullet
-}
-
-function jsonConcat(o1, o2) {
- for (var key in o2) {
-  o1[key] = o2[key];
- }
- return o1;
 }
