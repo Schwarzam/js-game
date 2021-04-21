@@ -32,6 +32,8 @@ function updateGameStatus(data){
 	updateMyBullets(data)
 	walk(data)
 	updateBullets(data)
+
+	updateMyGame() //Trigger to send client update to server
 }
 
 function updatePlayersLobby(data) {

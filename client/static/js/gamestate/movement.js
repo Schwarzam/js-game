@@ -16,10 +16,11 @@ function walk(data){
 			player[i].y = sizingObjects(data.players[i].pos.y)
 
 			//Gun position from server
-			player[i].gun.x = player[i].x + 5
-			player[i].gun.y = player[i].y + 4
-			player[i].gun.angle = Math.atan2(data.players[i].mousePos.y - player[i].y, data.players[i].mousePos.x - player[i].x) * 180/Math.PI
+			player[i].gun.x = player[i].x + sizingObjects(5)
+			player[i].gun.y = player[i].y
 
+
+			player[i].gun.angle = Math.atan2(data.players[i].mousePos.y - player[i].y, data.players[i].mousePos.x - player[i].x) * 180/Math.PI
 			//Name position
 			player[i].nameTop.position.set(player[i].x - sizingObjects(10), player[i].y - sizingObjects(40))
 		}

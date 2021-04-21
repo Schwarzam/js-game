@@ -23,7 +23,7 @@ let keysDiv;
 let playerSheet = {}
 let geralConstant;
 let geralWidth;
-let mousePos = {}
+let mousePos = {x: 0, y: 0};
 
 let lobbyInterval;
 

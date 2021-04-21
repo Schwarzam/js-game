@@ -1,7 +1,7 @@
 function updateMousePos(e){
 	try{
 		var rect = e.target.getBoundingClientRect();
-		myGameState.mousePos = {x: e.clientX - rect.left, y: e.clientY - rect.top}
+		mousePos = {x: e.clientX - rect.left, y: e.clientY - rect.top}
 
 	}catch(e){
 
