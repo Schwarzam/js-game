@@ -79,7 +79,7 @@ io.on('connection', client => {
 		startGameLoop(roomName);
 
 		setTimeout(function(){
-			client.emit('gameStarted')
+			io.sockets.in(roomName).emit('gameStarted')
 		}, 100)
 	})
 

@@ -31,27 +31,22 @@ function walk(data){
 function myMove(){
 	try{
 		if (keys["87"]) {
-			myGameState.vel.y = -5;
+			vel.y = -5;
 		}
 		if (keys["65"]) {
-			myGameState.vel.x = -5;
+			vel.x = -5;
 		}
 		if (keys["68"]) {
-			myGameState.vel.x = 5;
+			vel.x = 5;
 		}
 		if (keys["83"]) {
-			myGameState.vel.y = 5;
+			vel.y = 5;
 		}
 
-		if (myGameState.vel.y !== 0 && myGameState.vel.x !== 0){
-			myGameState.vel.y = myGameState.vel.y/1.41
-			myGameState.vel.x = myGameState.vel.x/1.41
+		if (vel.y !== 0 && vel.x !== 0){
+			vel.y = vel.y/1.41
+			vel.x = vel.x/1.41
 		}
-
-		myGameState.pos.x += myGameState.vel.x
-		myGameState.pos.y += myGameState.vel.y
-		
-		myGameState.vel = {x: 0, y: 0}
 	}catch(e) {
 		console.log(e)
 	}

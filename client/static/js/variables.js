@@ -10,7 +10,7 @@ let myGameState = {};
 let gameState = {};
 
 
-
+let vel = {x: 0, y: 0};
 let player = {};
 let bullets = {};
 let myBullets = {}
