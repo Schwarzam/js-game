@@ -21,8 +21,8 @@ function gameState() {
 	return {
 		gameMode: '',
 		players: {},
-		alive: {},
-		gameOver: false
+		gameOver: false,
+		deadBullets: []
 	};
 }
 

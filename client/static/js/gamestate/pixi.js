@@ -9,11 +9,6 @@ function reverseSizingObjects(num){
 
 //Init the gamescreen
 function initGame() {
-	socket.emit('startGame')
-
-	redirectPage('game')
-	clearInterval(lobbyInterval)
-
 	geralWidth = window.innerWidth < 1500 ? window.innerWidth - window.innerWidth*0.1 : 1350
 	geralConstant = geralWidth/1350
 
@@ -38,7 +33,9 @@ function updateMyGame() {
 		myMove()
 
 		myGameState.bullets = myBullets
-		socket.emit('updateClient', myGameState)
+
+
+		socket.emit('updateClient', {player: myGameState, deadBullets: deadBullets})
 	}, 1000/50)
 }
 

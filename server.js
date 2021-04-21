@@ -65,12 +65,10 @@ io.on('connection', client => {
 			return;
 		} 
 		clientRooms[client.id] = gameCode;
-
 		if (state[gameCode].onGoing) {
 			client.emit('error', 'tooManyPlayers')
 			return;
 		}
-
 		state[gameCode] = addPlayer(state[gameCode], client.id)
 		client.join(gameCode);
 		client.emit('gameJoined');
@@ -80,13 +78,16 @@ io.on('connection', client => {
 		const roomName = clientRooms[client.id];
 		startGameLoop(roomName);
 
-		client.emit('gameStarted')
+		setTimeout(function(){
+			client.emit('gameStarted')
+		}, 100)
 	})
 
 	client.on('updateClient', function(data){
 		try{
 			const roomName = clientRooms[client.id];
-			state[roomName].players[client.id] = data
+			state[roomName].players[client.id] = data.player
+			state[roomName].deadBullets = state[roomName].deadBullets.concat(data.deadBullets)
 		}catch{
 			
 		}
@@ -121,6 +122,7 @@ function startGameLoop(roomName){
 		io.sockets.in(roomName)
 			.emit('updateGameStatus', state[roomName]);
 
+		state[roomName].deadBullets = []
 	}, 1000/50)
 }
 

@@ -38,7 +38,15 @@ function updatePlayersLobby(data) {
 	gameState = data
 }
 
+function startGame(){	
+	socket.emit('startGame')
+}
+
 function gameStarted(){
+	redirectPage('game')
+	initGame()
+	clearInterval(lobbyInterval)
+
     window.addEventListener("keydown", function(data){
 		keysDown(data)
 	// otherKeys(data)

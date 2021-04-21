@@ -9,6 +9,8 @@ function keysUp(e) {
 function walk(data){
 	try{
 		for (i in data.players){
+			document.getElementById(i).innerHTML = data.players[i].health
+
 			//Player position from server
 			player[i].x = sizingObjects(data.players[i].pos.x)
 			player[i].y = sizingObjects(data.players[i].pos.y)

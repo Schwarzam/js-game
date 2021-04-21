@@ -17,17 +17,17 @@ function fireFunction(e){
 					id: counter.toString() + myId,
 					client: myId,
 					angle: a * 180/Math.PI, 
-					posX: myGameState.pos.x + Math.cos(a) * 30,
-					posY: myGameState.pos.y + Math.sin(a) * 50,
+					posX: myGameState.pos.x + Math.cos(a) * 40,
+					posY: myGameState.pos.y + Math.sin(a) * 60,
 					speedX: Math.cos(a) * 5,
 					speedY: Math.sin(a) * 5,
 					damage: 20
 				}
 
 	counter = counter += 1;
-	myGameState.lastFire = +new Date();
+	lastFire = +new Date();
 
-	myBullets[newBullet.id] = newBullet
+	myBullets[newBullet.id] = newBullet;
 }
 
 function updateBullets(data){
@@ -36,8 +36,28 @@ function updateBullets(data){
 			const each = data.players[i]
 			for (i in each.bullets){
 				if (bullets[each.bullets[i].id]) {
-					bullets[each.bullets[i].id].x = sizingObjects(each.bullets[i].posX)
-					bullets[each.bullets[i].id].y = sizingObjects(each.bullets[i].posY)
+
+				
+				if (data.deadBullets.includes(each.bullets[i].id)){
+					console.log(data.deadBullets)
+					app.stage.removeChild(bullets[each.bullets[i].id])
+					delete myBullets[each.bullets[i].id]
+					delete bullets[each.bullets[i].id]
+					deadBullets = []
+				}else{
+
+					const res = checkHit(bullets[each.bullets[i].id].x, bullets[each.bullets[i].id].y)
+					if (res === 1){
+						myGameState.health -= each.bullets[i].damage
+						deadBullets.push(each.bullets[i].id)
+					}else if(res === 2){
+						deadBullets.push(each.bullets[i].id)
+					}else{
+						bullets[each.bullets[i].id].x = sizingObjects(each.bullets[i].posX)
+						bullets[each.bullets[i].id].y = sizingObjects(each.bullets[i].posY)
+					}				
+				}
+
 				}else{
 					console.log('bullet')
 					bullets[each.bullets[i].id] = createBullet(each.bullets[i])
@@ -49,13 +69,21 @@ function updateBullets(data){
 	}
 }
 
+function checkHit(bulletX, bulletY){
+	if ( (bulletX < player[myId].x + sizingObjects(11) && bulletX > player[myId].x - sizingObjects(11)) && bulletY < player[myId].y + sizingObjects(31) && bulletY > player[myId].y - sizingObjects(31)){
+		return 1 // Hitted me
+	}else if(bulletX > sizingObjects(1350) || bulletX < -10 || bulletY > sizingObjects(814) || bulletY < -10){
+		return 2 // Out of the map
+	}else{
+		return 0 // keep going
+	}
+}
+
 function updateMyBullets(){
 	try{
 		for (i in myBullets){
 			myBullets[i].posX += myBullets[i].speedX
 			myBullets[i].posY += myBullets[i].speedY
-
-			console.log(myBullets[i].posX)
 		}
 	}catch(e){
 		console.log(e)
