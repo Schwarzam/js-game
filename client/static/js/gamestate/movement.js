@@ -9,7 +9,21 @@ function keysUp(e) {
 function walk(data){
 	try{
 		for (i in data.players){
-			document.getElementById(i).innerHTML = data.players[i].health
+			try{
+				document.getElementById(i).innerHTML = data.players[i].health
+			}catch{}
+			
+
+			if (data.players[i].gunState === ''){
+
+			}else if (allGunStates[i] !== data.players[i].gunState){
+				try{
+					app.stage.removeChild(player[i].gun);
+				}catch(e){}
+
+				allGunStates[i] = data.players[i].gunState;
+				createGun(i, get_weapon(data.players[i].gunState).url)
+			}
 
 			//Player position from server
 			player[i].x = sizingObjects(data.players[i].pos.x)
@@ -24,24 +38,24 @@ function walk(data){
 			//Name position
 			player[i].nameTop.position.set(player[i].x - sizingObjects(10), player[i].y - sizingObjects(40))
 		}
-	}catch(e){
-		console.log(e)
+	}catch{
+		
 	}
 }
 
 function myMove(){
 	try{
 		if (keys["87"]) {
-			vel.y = -5;
+			vel.y = -10;
 		}
 		if (keys["65"]) {
-			vel.x = -5;
+			vel.x = -10;
 		}
 		if (keys["68"]) {
-			vel.x = 5;
+			vel.x = 10;
 		}
 		if (keys["83"]) {
-			vel.y = 5;
+			vel.y = 10;
 		}
 
 		if (vel.y !== 0 && vel.x !== 0){

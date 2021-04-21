@@ -29,19 +29,25 @@ function updateGameStatus(data){
 	gameState = data
 	myGameState = data.players[myId]
 
-	updateMyBullets(data)
-	walk(data)
-	updateBullets(data)
+	myGameState.gunState = myGameState.inventory[equipmentChoice]
 
 	vel = {x: 0, y: 0}
 	myMove()
+	myGameState.pos.x += vel.x
+	myGameState.pos.y += vel.y
 
+	updateMyBullets(data)
+	walk(data)
+	updateBullets(data)
 
 	updateMyGame() //Trigger to send client update to server
 }
 
 function updatePlayersLobby(data) {
 	gameState = data
+	try{
+		numEquips = gameState.players[myId].inventory.length;
+	}catch{}
 }
 
 function startGame(){	
@@ -55,7 +61,7 @@ function gameStarted(){
 
     window.addEventListener("keydown", function(data){
 		keysDown(data)
-	// otherKeys(data)
+		otherKeys(data)
     })
 
 	window.addEventListener("keyup", keysUp)

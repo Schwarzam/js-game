@@ -32,9 +32,6 @@ function updateMyGame() {
 	// const Interval = setInterval(async () => {
 		myGameState.bullets = myBullets
 		
-		myGameState.pos.x += vel.x
-		myGameState.pos.y += vel.y
-
 		myGameState.mousePos = mousePos
 		socket.emit('updateClient', {player: myGameState, deadBullets: deadBullets})
 		
@@ -148,4 +145,23 @@ function createScoreBoard(i, data){
 			board.appendChild(individual)
 		}, 1500)
 
+}
+
+function otherKeys(e){
+	if (e.keyCode === 49){
+		equipmentChoice = 0;
+	}	
+	if (e.keyCode === 50){
+		equipmentChoice = 1;
+	}
+	if (e.keyCode === 51){
+		equipmentChoice = 2;
+	}
+	if (e.keyCode === 52){
+		equipmentChoice = 3;
+	}
+
+	if (numEquips <= equipmentChoice){
+		equipmentChoice = 0
+	}
 }

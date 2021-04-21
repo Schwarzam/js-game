@@ -9,6 +9,12 @@ function updateMousePos(e){
 }
 
 function fireFunction(e){
+	const  now = +new Date();
+
+	const weapon = get_weapon(myGameState.gunState)
+	if (now - lastFire < weapon.fire_rate * 1000){
+		return;
+	}
 
 	var rect = e.target.getBoundingClientRect();
 	const a = Math.atan2(reverseSizingObjects(e.clientY - rect.top) - myGameState.pos.y, reverseSizingObjects(e.clientX - rect.left) - myGameState.pos.x);
@@ -19,9 +25,9 @@ function fireFunction(e){
 					angle: a * 180/Math.PI, 
 					posX: myGameState.pos.x + Math.cos(a) * 40,
 					posY: myGameState.pos.y + Math.sin(a) * 60,
-					speedX: Math.cos(a) * 5,
-					speedY: Math.sin(a) * 5,
-					damage: 20
+					speedX: Math.cos(a) * weapon.bullet_speed,
+					speedY: Math.sin(a) * weapon.bullet_speed,
+					damage: weapon.damage
 				}
 
 	counter = counter += 1;

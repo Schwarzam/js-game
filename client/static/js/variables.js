@@ -16,7 +16,11 @@ let bullets = {};
 let myBullets = {}
 let deadBullets = []
 
+let allGunStates = {}
+
 let lastFire = 0;
+let equipmentChoice = 0
+let numEquips = 2
 
 let keys = {};
 let keysDiv;

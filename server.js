@@ -123,7 +123,7 @@ function startGameLoop(roomName){
 			.emit('updateGameStatus', state[roomName]);
 
 		state[roomName].deadBullets = []
-	}, 1000/50)
+	}, 1000/20)
 }
 
 function playersConnected(roomName){
