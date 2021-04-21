@@ -33,6 +33,10 @@ function updateGameStatus(data){
 	walk(data)
 	updateBullets(data)
 
+	vel = {x: 0, y: 0}
+	myMove()
+
+
 	updateMyGame() //Trigger to send client update to server
 }
 

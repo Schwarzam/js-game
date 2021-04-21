@@ -31,14 +31,13 @@ function initGame() {
 function updateMyGame() {
 	// const Interval = setInterval(async () => {
 		myGameState.bullets = myBullets
-		myMove()
-
+		
 		myGameState.pos.x += vel.x
 		myGameState.pos.y += vel.y
 
 		myGameState.mousePos = mousePos
 		socket.emit('updateClient', {player: myGameState, deadBullets: deadBullets})
-		vel = {x: 0, y: 0}
+		
 	// }, 1000/50)
 }
 
