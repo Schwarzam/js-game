@@ -1,0 +1,96 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Schzz Js Online Game">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <title>Oui game</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/pages/lobby.js" defer></script>
+
+
+    <script src = "/socket.io/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.4/pixi.min.js"></script>
+    <script src="/script.js" defer></script>
+    <script src="/initial.js" defer></script>
+    <script src="/fire.js" defer></script>
+    <script src="/socket.js" defer></script>
+    
+
+
+
+    <style type="text/css">
+      #gameScreen{
+        display: none;
+      }
+      #lobby{
+        display: none;
+      }
+      #InitialScreen{
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="keys"></div><div class="disableSelect" style="position: absolute; right: 0" id='ping'></div>
+    <small style="position: absolute; left: 0;">Game code: <span id="gameCodeDisplay"></span></small>
+    <section class="vh-100">
+      <div class="container h-100">
+
+        <div id="InsertName" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <h2>Insert Name</h2>
+            
+            <div class="form-group">
+              <input type="text" id="gameNameInput" placeholder="Enter Name">
+            </div>
+            <button type="submit" class="btn btn-success" id='insertNameButton'>Go!</button>
+          </div>
+        </div>
+
+        <div id="InitialScreen" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <h2>Multiplayer</h2>
+            <button type="submit" class="btn btn-success" id='newGameButton'>Create New Game</button>
+            <div>OR</div>
+            <div class="form-group">
+              <input type="text" id="gameCodeInput" name="" placeholder="Enter Game Code">
+            </div>
+            <button type="submit" class="btn btn-success" id='joinGameButton'>Join Game</button>
+          </div>
+        </div>
+
+        <div id="lobby" class="h-100">
+        </div>
+
+        <div id="gameScreen" class="h-100">
+          <div id="health" class="disableSelect" style="position: absolute; top:30px; left:20%; display: flex;">
+            
+          </div>
+          <div class="d-flex justify-content-center h-100">
+            
+            <div id="GAME"></div>
+            <div>
+              <p>Guns</p>
+
+              <p>1 scout</p>
+              <p>2 glock</p>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </body>
+</html>
