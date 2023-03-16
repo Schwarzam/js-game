@@ -1,19 +1,20 @@
- module.exports = {
+module.exports = {
 	gameState,
+	gameLoop,
 	initGame,
-	addPlayer,
+	addPlayer
 }
 
 function initGame(playerIdentifier) {
 	const state = gameState()
 	state.players[playerIdentifier] = playerDefault()
-	state.host = playerIdentifier;
 	
 	return state;
 }
 
 function addPlayer(state, playerIdentifier) {
 	state.players[playerIdentifier] = playerDefault()
+	playerDefault()
 	return state
 }
 
@@ -21,14 +22,18 @@ function gameState() {
 	return {
 		gameMode: '',
 		players: {},
-		gameOver: false,
-		deadBullets: []
+		bullets: {
+			numBullets: 0,
+			newBullets: {},
+			bullets: {},
+		},
+		alive: {},
+		gameOver: false
 	};
 }
 
 function playerDefault(){
 	return{
-			mousePos: {x: 0, y: 0},
 			pos: {
 				x: 610,
 				y: 309,
@@ -37,10 +42,30 @@ function playerDefault(){
 				x: 0,
 				y: 0
 			},
-			bullets: {},
 			health: 100,
-			gunState: '',
-			inventory: ['scout', 'glock'],
-			lastFire: 0
+			gunState: {},
+			last_alive: '',
 		}
 }
+
+function gameLoop(state) {
+	if (!state){
+		return;
+	}	
+	for (i in Object.keys(state.players)){
+		if (state.players[Object.keys(state.players)[i]].pos.x + state.players[Object.keys(state.players)[i]].vel.x > 1350){
+			state.players[Object.keys(state.players)[i]].pos.x = 1349
+		}else if (state.players[Object.keys(state.players)[i]].pos.x + state.players[Object.keys(state.players)[i]].vel.x < 0){
+			state.players[Object.keys(state.players)[i]].pos.x = 1
+		}else if (state.players[Object.keys(state.players)[i]].pos.y + state.players[Object.keys(state.players)[i]].vel.y > 814){
+			state.players[Object.keys(state.players)[i]].pos.y = 812
+		}else if (state.players[Object.keys(state.players)[i]].pos.y + state.players[Object.keys(state.players)[i]].vel.y < 0){
+			state.players[Object.keys(state.players)[i]].pos.y = 1
+		}else{
+			state.players[Object.keys(state.players)[i]].pos.x += state.players[Object.keys(state.players)[i]].vel.x;
+			state.players[Object.keys(state.players)[i]].pos.y += state.players[Object.keys(state.players)[i]].vel.y;
+		}
+		state.players[Object.keys(state.players)[i]].vel = {x: 0, y: 0}
+	}
+}
+

@@ -1,20 +1,30 @@
-# Simple Socket.io JavaScript Game
+# hello-express
 
-For my socket.io JavaScript game, I created a simple multiplayer game where players take control of a character and race to the finish line. Players can use power-ups to slow down their opponents, speed themselves up, or jump over obstacles. The game is fast-paced and highly competitive, making for an exciting gameplay experience.
+A server that serves a webpage, its resources, and some data
 
-## Development Process:
 
-I developed the game using socket.io for the multiplayer aspect, along with a combination of HTML, CSS, and JavaScript for the front-end. I worked on the game alone, and one of the biggest challenges I faced was figuring out how to synchronize player movement across multiple clients. After some trial and error, I was able to implement a system that worked well for the game.
+## Your Project
 
-## Gameplay Mechanics:
+On the front-end,
 
-Players control their characters using the arrow keys, with the space bar used to activate power-ups. The objective of the game is to reach the finish line before any of the other players. Along the way, players can collect power-ups that give them an advantage in the race. However, they must be careful not to fall behind or get slowed down by their opponents' power-ups.
+- Edit `views/index.html` to change the content of the webpage
+- `public/client.js` is the javacript that runs when you load the webpage
+- `public/style.css` is the styles for `views/index.html`
+- Drag in `assets`, like images or music, to add them to your project
 
-## Incomplete Features:
+On the back-end,
 
-A feature that I would have liked to add was a wider variety of power-ups, as I think this would have added even more excitement to the game.
-Maybe this version isnt working, but the code is public to whoever wants it.
+- your app starts at `server.js`
+- add frameworks and packages in `package.json`
+- safely store app secrets in `.env` (nobody can see this but you and people you invite)
 
-## Conclusion:
+Click `Show` in the header to see your app live. Updates to your code will instantly deploy.
 
-Overall, creating this socket.io JavaScript game was a fun and rewarding experience. I learned a lot about game development, and I think that the end product was a lot of fun to play. I would recommend this type of project to anyone who is interested in game development or wants to learn more about working with socket.io. In the future, I may come back to this game and add more features or improve upon what is already there.
+
+## Made by [Glitch](https://glitch.com/)
+
+**Glitch** is the friendly community where you'll build the app of your dreams. Glitch lets you instantly create, remix, edit, and host an app, bot or site, and you can invite collaborators or helpers to simultaneously edit code with you.
+
+Find out more [about Glitch](https://glitch.com/about).
+
+( ᵔ ᴥ ᵔ )
