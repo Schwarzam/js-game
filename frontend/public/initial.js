@@ -21,6 +21,7 @@ let playerNumber;
 let gameCode;
 let name;
 let myID;
+let playerDead = false;
 
 let players = [];
 

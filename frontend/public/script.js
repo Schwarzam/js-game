@@ -1,6 +1,5 @@
 const socket = io('/')
 
-
 function handleGameState(data){
     if (data){
     	var instructions = data
@@ -11,6 +10,7 @@ function handleGameState(data){
 
     		console.log(instructions[Object.keys(instructions)[i]])
     		if (instructions[Object.keys(instructions)[i]].dead){
+				playerDead = true
     			player[`${Object.keys(instructions)[i]}`].textures = playerSheet['dead']
     		}
     	}	
@@ -157,18 +157,20 @@ function keysUp(e) {
 
 let interval = false
 function gameLoop(e) {
-	keysDiv.innerHTML = JSON.stringify(keys);
-	if (keys["87"]) {
-		socket.emit('keyDown', 87)
-	}
-	if (keys["65"]) {
-		socket.emit('keyDown', 65)
-	}
-	if (keys["68"]) {
-		socket.emit('keyDown', 68)
-	}
-	if (keys["83"]) {
-		socket.emit('keyDown', 83)
+	if (!playerDead){
+		keysDiv.innerHTML = JSON.stringify(keys);
+		if (keys["87"]) {
+			socket.emit('keyDown', 87)
+		}
+		if (keys["65"]) {
+			socket.emit('keyDown', 65)
+		}
+		if (keys["68"]) {
+			socket.emit('keyDown', 68)
+		}
+		if (keys["83"]) {
+			socket.emit('keyDown', 83)
+		}
 	}
 }
 

@@ -17,14 +17,15 @@ let bullets = {};
 let fireInterval;
 
 function fireFunction(e) {
-	
-	var rect = e.target.getBoundingClientRect();
-	var x = e.clientX - rect.left; //x position within the element.
-    var y = e.clientY - rect.top;
-    
-	const info = {mouseX: reverseSizingObjects(x), mouseY: reverseSizingObjects(y)}
+	if (!playerDead){
+		var rect = e.target.getBoundingClientRect();
+		var x = e.clientX - rect.left; //x position within the element.
+		var y = e.clientY - rect.top;
+		
+		const info = {mouseX: reverseSizingObjects(x), mouseY: reverseSizingObjects(y)}
 
-	socket.emit('fireBullet', info)
+		socket.emit('fireBullet', info)
+	}
 }
 
 function deFireFunction(e) {
