@@ -12,7 +12,7 @@ socket.on('startGame', handleStartGame)
 socket.on('winner', handleWin)
 
 function setId(id){
-	myId = id;
+	myID = id
 }
 
 function handleUnknownGame(){

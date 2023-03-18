@@ -8,9 +8,12 @@ function handleGameState(data){
     		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     		displayHealth(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
 
-    		console.log(instructions[Object.keys(instructions)[i]])
+    		//console.log(instructions[Object.keys(instructions)[i]])
     		if (instructions[Object.keys(instructions)[i]].dead){
-				playerDead = true
+				console.log(`${Object.keys(instructions)[i]}`, myID)
+				if (`${Object.keys(instructions)[i]}` === `${myID}`){
+					playerDead = true
+				}
     			player[`${Object.keys(instructions)[i]}`].textures = playerSheet['dead']
     		}
     	}	
@@ -204,7 +207,7 @@ function walk(obj, n){
 }
 
 function createScoreBoard(data){
-	console.log(data[Object.keys(data)[0]], data)
+	//console.log(data[Object.keys(data)[0]], data)
 	const board = document.getElementById('health')
 	const individual = document.createElement('p')
 	individual.style.padding = '12px'
