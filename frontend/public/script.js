@@ -8,9 +8,7 @@ function handleGameState(data){
     		walk(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
     		displayHealth(instructions[Object.keys(instructions)[i]], Object.keys(instructions)[i])
 
-    		//console.log(instructions[Object.keys(instructions)[i]])
     		if (instructions[Object.keys(instructions)[i]].dead){
-				console.log(`${Object.keys(instructions)[i]}`, myID)
 				if (`${Object.keys(instructions)[i]}` === `${myID}`){
 					playerDead = true
 				}
@@ -84,7 +82,6 @@ function createPlayerSheet(){
 	let west = new PIXI.BaseTexture.from("/imgs/p_default_esquerda.png")
 	let dead = new PIXI.BaseTexture.from("/imgs/dead.png")
 
-	console.log(sizingObjects(64))
 	let w = 64;
 	let h = 64;
 
@@ -207,7 +204,6 @@ function walk(obj, n){
 }
 
 function createScoreBoard(data){
-	//console.log(data[Object.keys(data)[0]], data)
 	const board = document.getElementById('health')
 	const individual = document.createElement('p')
 	individual.style.padding = '12px'
@@ -217,7 +213,6 @@ function createScoreBoard(data){
 }
 
 function displayHealth(data, id){
-	// console.log(data)
 	document.getElementById(id).innerHTML = data.health
 }
 
